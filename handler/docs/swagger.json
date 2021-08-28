@@ -1,0 +1,319 @@
+{
+    "schemes": [
+        "https",
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "Holder Api Doc",
+        "title": "Holder API",
+        "termsOfService": "http://pando.im/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.pando.im/support",
+            "email": "support@pando.im"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "holder-api.fox.one",
+    "basePath": "/api",
+    "paths": {
+        "/gems": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Gems"
+                ],
+                "summary": "list all gems",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Resp_ListGems"
+                        }
+                    }
+                }
+            }
+        },
+        "/transactions": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "list transactions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "cursor",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Resp_ListTransactions"
+                        }
+                    }
+                }
+            }
+        },
+        "/transactions/{follow_id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "find tx by follow id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Example: Bearer foo",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "follow id",
+                        "name": "follow_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Transaction"
+                        }
+                    }
+                }
+            }
+        },
+        "/vaults": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vaults"
+                ],
+                "summary": "List Vaults",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Resp_ListVaults"
+                        }
+                    }
+                }
+            }
+        },
+        "/vaults/{vault_id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Vaults"
+                ],
+                "summary": "Find Vault By ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "vault id",
+                        "name": "vault_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Vault"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "api.Gem": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "liquidity": {
+                    "type": "string"
+                },
+                "logo": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "profit": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.Pagination": {
+            "type": "object",
+            "properties": {
+                "has_next": {
+                    "type": "boolean"
+                },
+                "next_cursor": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.Resp_ListGems": {
+            "type": "object",
+            "properties": {
+                "gems": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.Gem"
+                    }
+                }
+            }
+        },
+        "api.Resp_ListTransactions": {
+            "type": "object",
+            "properties": {
+                "pagination": {
+                    "$ref": "#/definitions/api.Pagination"
+                },
+                "transactions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.Transaction"
+                    }
+                }
+            }
+        },
+        "api.Resp_ListVaults": {
+            "type": "object",
+            "properties": {
+                "vaults": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.Vault"
+                    }
+                }
+            }
+        },
+        "api.Transaction": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "integer"
+                },
+                "amount": {
+                    "type": "string"
+                },
+                "asset_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "description": "@inject_tag: swaggertype:\"string\" format:\"date\"",
+                    "type": "string",
+                    "format": "date"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "msg": {
+                    "type": "string"
+                },
+                "parameters": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.Vault": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "string"
+                },
+                "asset_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "description": "@inject_tag: swaggertype:\"string\" format:\"date\"",
+                    "type": "string",
+                    "format": "date"
+                },
+                "duration": {
+                    "type": "integer"
+                },
+                "gem": {
+                    "$ref": "#/definitions/api.Gem"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "liquidity": {
+                    "type": "string"
+                },
+                "min_duration": {
+                    "type": "integer"
+                },
+                "penalty": {
+                    "type": "string"
+                },
+                "reward": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

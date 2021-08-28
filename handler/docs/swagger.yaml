@@ -1,0 +1,209 @@
+basePath: /api
+definitions:
+  api.Gem:
+    properties:
+      amount:
+        type: string
+      id:
+        type: string
+      liquidity:
+        type: string
+      logo:
+        type: string
+      name:
+        type: string
+      profit:
+        type: string
+    type: object
+  api.Pagination:
+    properties:
+      has_next:
+        type: boolean
+      next_cursor:
+        type: string
+    type: object
+  api.Resp_ListGems:
+    properties:
+      gems:
+        items:
+          $ref: '#/definitions/api.Gem'
+        type: array
+    type: object
+  api.Resp_ListTransactions:
+    properties:
+      pagination:
+        $ref: '#/definitions/api.Pagination'
+      transactions:
+        items:
+          $ref: '#/definitions/api.Transaction'
+        type: array
+    type: object
+  api.Resp_ListVaults:
+    properties:
+      vaults:
+        items:
+          $ref: '#/definitions/api.Vault'
+        type: array
+    type: object
+  api.Transaction:
+    properties:
+      action:
+        type: integer
+      amount:
+        type: string
+      asset_id:
+        type: string
+      created_at:
+        description: '@inject_tag: swaggertype:"string" format:"date"'
+        format: date
+        type: string
+      id:
+        type: string
+      msg:
+        type: string
+      parameters:
+        type: string
+      status:
+        type: integer
+    type: object
+  api.Vault:
+    properties:
+      amount:
+        type: string
+      asset_id:
+        type: string
+      created_at:
+        description: '@inject_tag: swaggertype:"string" format:"date"'
+        format: date
+        type: string
+      duration:
+        type: integer
+      gem:
+        $ref: '#/definitions/api.Gem'
+      id:
+        type: string
+      liquidity:
+        type: string
+      min_duration:
+        type: integer
+      penalty:
+        type: string
+      reward:
+        type: string
+      status:
+        type: integer
+      user_id:
+        type: string
+    type: object
+host: holder-api.fox.one
+info:
+  contact:
+    email: support@pando.im
+    name: API Support
+    url: http://www.pando.im/support
+  description: Holder Api Doc
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://pando.im/terms/
+  title: Holder API
+  version: "1.0"
+paths:
+  /gems:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Resp_ListGems'
+      summary: list all gems
+      tags:
+      - Gems
+  /transactions:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        name: cursor
+        type: string
+      - in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Resp_ListTransactions'
+      summary: list transactions
+      tags:
+      - Transactions
+  /transactions/{follow_id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 'Example: Bearer foo'
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: follow id
+        in: path
+        name: follow_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Transaction'
+      summary: find tx by follow id
+      tags:
+      - Transactions
+  /vaults:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Resp_ListVaults'
+      summary: List Vaults
+      tags:
+      - Vaults
+  /vaults/{vault_id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: vault id
+        in: path
+        name: vault_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Vault'
+      summary: Find Vault By ID
+      tags:
+      - Vaults
+schemes:
+- https
+- http
+swagger: "2.0"
