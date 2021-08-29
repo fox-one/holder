@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/fox-one/holder/cmd/holder-worker/config"
+	"github.com/fox-one/holder/cmd/holder-server/config"
 	"github.com/fox-one/holder/core"
 	"github.com/fox-one/holder/service/asset"
 	"github.com/fox-one/holder/service/message"
@@ -39,13 +39,12 @@ func provideWalletServiceConfig(cfg *config.Config) wallet.Config {
 
 func provideSystem(cfg *config.Config) *core.System {
 	return &core.System{
-		Admins:     cfg.Group.Admins,
-		ClientID:   cfg.Dapp.ClientID,
-		Members:    cfg.Group.Members,
-		Threshold:  cfg.Group.Threshold,
-		GasAssetID: cfg.Gas.AssetID,
-		GasAmount:  cfg.Gas.Amount,
-		Version:    version,
+		Admins:       cfg.Group.Admins,
+		ClientID:     cfg.Dapp.ClientID,
+		ClientSecret: cfg.Dapp.ClientSecret,
+		Members:      cfg.Group.Members,
+		Threshold:    cfg.Group.Threshold,
+		Version:      version,
 	}
 }
 

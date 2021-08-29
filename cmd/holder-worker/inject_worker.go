@@ -11,7 +11,6 @@ import (
 	"github.com/fox-one/holder/worker/spentsync"
 	"github.com/fox-one/holder/worker/syncer"
 	"github.com/fox-one/holder/worker/txsender"
-	"github.com/fox-one/pando/worker/pricesync"
 	"github.com/google/wire"
 )
 
@@ -48,13 +47,12 @@ func provideWorkers(
 	a *cashier.Cashier,
 	b *messenger.Messenger,
 	c *payee.Payee,
-	d *pricesync.Sync,
 	e *spentsync.SpentSync,
 	f *txsender.Sender,
 	g *syncer.Syncer,
 	h *assigner.Assigner,
 	i *datadog.Datadog,
 ) []worker.Worker {
-	workers := []worker.Worker{a, b, c, d, e, f, g, h, i}
+	workers := []worker.Worker{a, b, c, e, f, g, h, i}
 	return workers
 }

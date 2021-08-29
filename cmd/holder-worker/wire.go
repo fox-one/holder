@@ -3,8 +3,8 @@
 package main
 
 import (
+	"github.com/fox-one/holder/cmd/holder-worker/config"
 	"github.com/google/wire"
-	"github.com/pandodao/bholdings/cmd/bholdings-worker/config"
 )
 
 func buildApp(cfg *config.Config) (app, error) {

@@ -1,12 +1,10 @@
 package parliament
 
 import (
-	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"text/template"
 	"time"
 
 	"github.com/fox-one/holder/core"
@@ -17,36 +15,19 @@ import (
 	"github.com/fox-one/mixin-sdk-go"
 )
 
-type Config struct {
-	Links map[string]string
-}
-
 func New(
 	messages core.MessageStore,
 	userz core.UserService,
 	assetz core.AssetService,
 	walletz core.WalletService,
 	system *core.System,
-	cfg Config,
 ) core.Parliament {
-	links := &template.Template{}
-	for name, tpl := range cfg.Links {
-		if tpl == "" {
-			continue
-		}
-
-		links = template.Must(
-			links.New(name).Parse(tpl),
-		)
-	}
-
 	return &parliament{
 		messages: messages,
 		userz:    userz,
 		assetz:   asset.Cache(assetz),
 		walletz:  walletz,
 		system:   system,
-		links:    links,
 	}
 }
 
@@ -56,16 +37,6 @@ type parliament struct {
 	assetz   core.AssetService
 	walletz  core.WalletService
 	system   *core.System
-	links    *template.Template
-}
-
-func (s *parliament) executeLink(name string, data interface{}) (string, error) {
-	b := bytes.Buffer{}
-	if err := s.links.ExecuteTemplate(&b, name, data); err != nil {
-		return "", err
-	}
-
-	return b.String(), nil
 }
 
 func (s *parliament) requestVoteAction(ctx context.Context, proposal *core.Proposal) (string, error) {
@@ -82,16 +53,11 @@ func (s *parliament) requestVoteAction(ctx context.Context, proposal *core.Propo
 		return "", err
 	}
 
-	memo, err := mtg.Encrypt(data, mixin.GenerateEd25519Key(), s.system.PublicKey)
-	if err != nil {
-		return "", err
-	}
-
 	transfer := &core.Transfer{
 		TraceID:   uuid.Modify(proposal.TraceID, s.system.ClientID),
 		AssetID:   s.system.GasAssetID,
 		Amount:    s.system.GasAmount,
-		Memo:      base64.StdEncoding.EncodeToString(memo),
+		Memo:      base64.StdEncoding.EncodeToString(data),
 		Threshold: s.system.Threshold,
 		Opponents: s.system.Members,
 	}

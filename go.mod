@@ -12,24 +12,31 @@ require (
 	github.com/fatih/structs v1.1.0
 	github.com/fox-one/mixin-sdk-go v1.5.0
 	github.com/fox-one/msgpack v1.0.0
-	github.com/fox-one/pando v1.8.4
 	github.com/fox-one/pkg v1.5.5
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/gofrs/uuid v4.0.0+incompatible
 	github.com/golang/protobuf v1.5.2
+	github.com/google/wire v0.5.0
 	github.com/gorilla/schema v1.2.0
 	github.com/jinzhu/gorm v1.9.16
 	github.com/jmoiron/sqlx v1.3.4
-	github.com/json-iterator/go v1.1.10 // indirect
+	github.com/json-iterator/go v1.1.10
 	github.com/lib/pq v1.9.0
 	github.com/oxtoacart/bpool v0.0.0-20190530202638-03653db5a59c
 	github.com/patrickmn/go-cache v2.1.0+incompatible
+	github.com/rs/cors v1.8.0
 	github.com/shopspring/decimal v1.2.0
+	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/cast v1.3.1
+	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.7.0
 	github.com/swaggo/swag v1.7.1
 	github.com/twitchtv/twirp v7.1.1+incompatible
+	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a // indirect
+	golang.org/x/net v0.0.0-20210614182718-04defd469f4e // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
+	golang.org/x/sys v0.0.0-20210615035016-665e8c7367d1 // indirect
 	golang.org/x/text v0.3.6
 	google.golang.org/protobuf v1.26.0
 )

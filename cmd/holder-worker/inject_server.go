@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/fox-one/holder/handler/hc"
+	"github.com/fox-one/holder/handler/node"
 	"github.com/fox-one/holder/server"
-	"github.com/fox-one/pando/handler/node"
 	"github.com/fox-one/pkg/logger"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"

@@ -55,7 +55,7 @@ func init() {
 func main() {
 	flag.Parse()
 
-	logrus.Infof("bholdings worker %s(%s) launched at port %d", version, commit, _flag.port)
+	logrus.Infof("holder worker %s(%s) launched at port %d", version, commit, _flag.port)
 
 	if _flag.debug {
 		logrus.SetLevel(logrus.DebugLevel)

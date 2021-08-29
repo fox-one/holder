@@ -26,7 +26,7 @@ func main() {
 		logrus.SetLevel(logrus.DebugLevel)
 	}
 
-	logrus.Infof("bholdings server %s(%s) launched at port %d", version, commit, *port)
+	logrus.Infof("holder server %s(%s) launched at port %d", version, commit, *port)
 
 	cfg, err := config.Viperion(*cfgFile, embed)
 	if err != nil {

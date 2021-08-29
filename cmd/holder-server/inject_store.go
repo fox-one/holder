@@ -1,14 +1,14 @@
 package main
 
 import (
-	"github.com/fox-one/holder/cmd/holder-worker/config"
-	"github.com/fox-one/holder/service/message"
-	"github.com/fox-one/holder/service/user"
-	"github.com/fox-one/holder/service/wallet"
+	"github.com/fox-one/holder/cmd/holder-server/config"
 	"github.com/fox-one/holder/store/gem"
+	"github.com/fox-one/holder/store/message"
 	"github.com/fox-one/holder/store/proposal"
 	"github.com/fox-one/holder/store/transaction"
+	"github.com/fox-one/holder/store/user"
 	"github.com/fox-one/holder/store/vault"
+	"github.com/fox-one/holder/store/wallet"
 	"github.com/fox-one/pkg/store/db"
 	propertystore "github.com/fox-one/pkg/store/property"
 	"github.com/google/wire"

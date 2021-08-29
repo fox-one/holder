@@ -7,7 +7,6 @@ import (
 	"github.com/fox-one/holder/pkg/cont"
 	"github.com/fox-one/holder/pkg/mtg"
 	"github.com/fox-one/holder/pkg/uuid"
-	"github.com/fox-one/mixin-sdk-go"
 	"github.com/fox-one/pkg/logger"
 )
 
@@ -43,7 +42,6 @@ func handleProposal(r *cont.Request, walletz core.WalletService, system *core.Sy
 	data, _ = core.TransactionAction{
 		Body: data,
 	}.Encode()
-	data, _ = mtg.Encrypt(data, mixin.GenerateEd25519Key(), system.PublicKey)
 	memo := base64.StdEncoding.EncodeToString(data)
 
 	ctx := r.Context()

@@ -1,7 +1,6 @@
 package system
 
 import (
-	"encoding/base64"
 	"net/http"
 
 	"github.com/fox-one/holder/core"
@@ -32,7 +31,6 @@ func HandleInfo(system *core.System) http.HandlerFunc {
 			OauthClientID: system.ClientID,
 			Members:       system.Members,
 			Threshold:     system.Threshold,
-			PublicKey:     base64.StdEncoding.EncodeToString(system.PublicKey),
 		})
 	}
 }

@@ -42,7 +42,7 @@ tasks:
 
   docker-base:
     vars:
-      image: bholdings/{{.name}}
+      image: holder/{{.name}}
       version:
         sh: echo {{.VERSION}} | cut -c2-
     cmds:
@@ -57,13 +57,13 @@ tasks:
       - cmd: >
           docker tag {{.image}} {{.image}}:{{.version}}
 
-  bholdings/server:
+  holder/server:
     cmds:
       - task: docker-base
         vars:
           name: server
 
-  bholdings/worker:
+  holder/worker:
     cmds:
       - task: docker-base
         vars:
