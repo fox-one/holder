@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/alecthomas/template"
-	"github.com/fox-one/pando/handler/render"
+	"github.com/fox-one/holder/handler/render"
 )
 
 func Handler(version string) http.Handler {

@@ -1,8 +1,6 @@
 package core
 
 import (
-	"crypto/ed25519"
-
 	"github.com/asaskevich/govalidator"
 	"github.com/shopspring/decimal"
 )
@@ -16,8 +14,6 @@ type System struct {
 	Threshold    uint8
 	GasAssetID   string
 	GasAmount    decimal.Decimal
-	PrivateKey   ed25519.PrivateKey
-	PublicKey    ed25519.PublicKey
 	Version      string
 }
 

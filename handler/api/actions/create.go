@@ -7,7 +7,6 @@ import (
 	"github.com/fox-one/holder/core"
 	"github.com/fox-one/holder/handler/param"
 	"github.com/fox-one/holder/handler/render"
-	"github.com/fox-one/holder/pkg/mtg"
 	"github.com/fox-one/holder/pkg/mtg/types"
 	"github.com/fox-one/holder/pkg/uuid"
 	"github.com/fox-one/mixin-sdk-go"
@@ -62,9 +61,6 @@ func HandleCreate(walletz core.WalletService, system *core.System) http.HandlerF
 				FollowID: follow.Bytes(),
 				Body:     data,
 			}.Encode()
-
-			key := mixin.GenerateEd25519Key()
-			data, err = mtg.Encrypt(data, key, system.PublicKey)
 		}
 
 		if err != nil {

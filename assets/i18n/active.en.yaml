@@ -1,0 +1,58 @@
+# Sys
+ActionSysWithdraw: withdraw
+ActionSysProperty: set property
+# Proposal
+ActionProposalMake: make a proposal
+ActionProposalShout: shout for a proposal
+ActionProposalVote: vote a proposal
+ActionGemDonate: donate
+ActionGemGain: withdraw profit
+ActionVaultLock: lock
+ActionVaultRelease: unlock
+
+login_done: |
+  Successfully authorized. Welcome to Holder.
+
+tx_ok: |
+  ✅ {{.Action}} successfully
+
+  - id: {{.FollowID}}
+  - parameters :{{.Parameters}}
+
+tx_abort: |
+  ❌ {{.Action}} failed
+
+  - error code "{{.Message}}"
+
+detail_button: Detail
+
+vault_locked: |
+  🔒 Locked successfully
+
+  - ID: {{.TraceID}}
+  - Locked amount: {{.Amount}} {{.Symbol}}
+  - Starting time: {{.CreatedAt}} (UTC)
+  - End Time: {{.ExpiredAt}} （UTC）
+
+vault_released: |
+  ✅ Unlocked successfully
+
+  - ID：{{.TraceID}}
+  - Locked amount: {{.Amount}} {{.Symbol}}
+  {{ if .Reward -}}
+  - Lock Reward: {{.Reward}} {{.Symbol}}
+  {{ end }}
+  {{ if .Penalty -}}
+  - Unlock Penalty: {{.Penalty}} {{.Symbol}}
+  {{ end }}
+  - Starting time: {{.CreatedAt}} (UTC)
+  - End Time: {{.ExpiredAt}} （UTC）
+  - Unlock Time: {{.ReleasedAt}} (UTC)
+
+donated: |
+  ✅ Donate successfully
+
+  - Amount: {{.Amount}} {{.Symbol}}
+  - Time: {{.DonateAt}}（UTC）
+
+  Thanks!

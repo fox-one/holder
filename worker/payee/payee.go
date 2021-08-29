@@ -144,11 +144,6 @@ func (w *Payee) handleOutput(ctx context.Context, output *core.Output) error {
 		req.SysVersion = v
 	}
 
-	// 2. decode tx message
-	if body, err := mtg.Decrypt(message, w.system.PrivateKey); err == nil {
-		message = body
-	}
-
 	if payload, err := core.DecodeTransactionAction(message); err == nil {
 		if req.Body, err = mtg.Scan(payload.Body, &req.Action); err == nil {
 			if follow, _ := uuid.FromBytes(payload.FollowID); follow != uuid.Zero {

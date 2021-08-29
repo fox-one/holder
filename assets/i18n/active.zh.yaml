@@ -1,0 +1,58 @@
+# Sys
+ActionSysWithdraw: 提现
+ActionSysProperty: 设置参数
+# Proposal
+ActionProposalMake: 发起投票
+ActionProposalShout: 呼吁投票
+ActionProposalVote: 投票
+ActionGemDonate: 捐赠
+ActionGemGain: 提取收益
+ActionVaultLock: 锁仓
+ActionVaultRelease: 赎回
+
+login_done: |
+  授权成功，欢迎来到大牢宝。拿住，我们能赢！
+
+tx_ok: |
+  ✅ {{.Action}}执行成功
+
+  - id：{{.FollowID}}
+  - 参数：{{.Parameters}}
+
+tx_abort: |
+  ❌ {{.Action}}失败
+
+  - 错误代码 "{{.Message}}"
+
+detail_button: 查看详情
+
+vault_locked: |
+  🔒 锁仓成功
+
+  - ID: {{.TraceID}}
+  - 锁仓金额：{{.Amount}} {{.Symbol}}
+  - 锁仓时间：{{.CreatedAt}}（ UTC 时间 ）
+  - 到期时间：{{.ExpiredAt}} （ UTC 时间 ）
+
+vault_released: |
+  ✅ 赎回成功
+
+  - ID：{{.TraceID}}
+  - 锁仓金额：{{.Amount}} {{.Symbol}}
+  {{ if .Reward -}}
+  - 锁仓奖励：{{.Reward}} {{.Symbol}}
+  {{ end }}
+  {{ if .Penalty -}}
+  - 提前赎回罚金：{{.Penalty}} {{.Symbol}}
+  {{ end }}
+  - 锁仓时间：{{.CreatedAt}}（ UTC 时间 ）
+  - 到期时间：{{.ExpiredAt}} （ UTC 时间 ）
+  - 赎回时间：{{.ReleasedAt}} （ UTC 时间 ）
+
+donated: |
+  ✅ 捐赠成功
+
+  - 捐赠金额：{{.Amount}} {{.Symbol}}
+  - 捐赠日期：{{.DonateAt}}（ UTC 时间 ）
+
+  感谢捐赠！

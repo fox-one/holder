@@ -43,3 +43,8 @@ type (
 		ListUser(ctx context.Context, userID string) ([]*Vault, error)
 	}
 )
+
+func (vault *Vault) EndAt() time.Time {
+	dur := time.Duration(vault.Duration) * time.Second
+	return vault.CreatedAt.Add(dur)
+}
