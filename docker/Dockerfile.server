@@ -1,0 +1,23 @@
+FROM golang:1.16 AS builder
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+RUN go install github.com/go-task/task/v3/cmd/task@latest
+
+COPY . ./
+
+RUN task build-server
+
+FROM frolvlad/alpine-glibc
+
+WORKDIR /app
+
+COPY --from=builder /app/builds/holder-server .
+Add assets assets
+
+EXPOSE 7778
+
+ENTRYPOINT ["/app/holder-server"]
