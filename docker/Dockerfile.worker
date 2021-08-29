@@ -11,7 +11,7 @@ COPY . ./
 
 RUN task build-worker
 
-FROM frolvlad/alpine-glibc:latest
+FROM alpine
 
 WORKDIR /app
 
