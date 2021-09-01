@@ -43,6 +43,7 @@ func init() {
 	flag.BoolVar(&_flag.debug, "debug", false, "debug mode")
 	flag.IntVar(&_flag.port, "port", 7777, "server port")
 	flag.StringVar(&_flag.cfgFile, "config", "", "config filename")
+	flag.BoolVar(&_flag.keeper, "keeper", false, "run keeper")
 
 	// worker.cashier.Config
 	flag.IntVar(&_flag.cashier.batch, "cashier.batch", 100, "custom batch for worker cashier")

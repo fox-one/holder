@@ -24,6 +24,7 @@ import (
 	"github.com/fox-one/holder/worker/cashier"
 	"github.com/fox-one/holder/worker/datadog"
 	"github.com/fox-one/holder/worker/events"
+	"github.com/fox-one/holder/worker/keeper"
 	"github.com/fox-one/holder/worker/messenger"
 	"github.com/fox-one/holder/worker/payee"
 	"github.com/fox-one/holder/worker/spentsync"
@@ -76,7 +77,8 @@ func buildApp(cfg *config.Config) (app, error) {
 	assignerAssigner := assigner.New(walletStore, system)
 	datadogConfig := provideDataDogConfig(cfg)
 	datadogDatadog := datadog.New(walletStore, store, messageService, datadogConfig)
-	v := provideWorkers(cashierCashier, messengerMessenger, payeePayee, eventsEvents, spentSync, sender, syncerSyncer, assignerAssigner, datadogDatadog)
+	keeperKeeper := keeper.New(vaultStore, walletService, system)
+	v := provideWorkers(cashierCashier, messengerMessenger, payeePayee, eventsEvents, spentSync, sender, syncerSyncer, assignerAssigner, datadogDatadog, keeperKeeper)
 	server := node.New(system, store)
 	mux := provideRoute(server)
 	serverServer := provideServer(mux)
