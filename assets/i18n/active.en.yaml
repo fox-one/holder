@@ -27,7 +27,7 @@ tx_abort: |
 detail_button: Detail
 
 vault_locked: |
-  🔒 Locked successfully
+  🔒 Lock successfully
 
   - ID: {{.TraceID}}
   - Locked amount: {{.Amount}} {{.Symbol}}
@@ -35,9 +35,9 @@ vault_locked: |
   - End Time: {{.ExpiredAt}} (UTC)
 
 vault_released: |
-  ✅ Unlocked successfully
+  ✅ Unlock successfully
 
-  - ID：{{.TraceID}}
+  - ID: {{.TraceID}}
   - Locked amount: {{.Amount}} {{.Symbol}}
   {{ if .Reward -}}
   - Lock Reward: {{.Reward}} {{.Symbol}}
