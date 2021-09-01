@@ -47,7 +47,7 @@ func New(
 		core.ActionProposalShout: proposal.HandleShout(proposals, parliaments, system),
 		core.ActionProposalVote:  proposal.HandleVote(proposals, parliaments, walletz, system),
 		// gem
-		core.ActionGemDonate: gem.HandleDonate(gems),
+		core.ActionGemDonate: gem.HandleDonate(gems, properties),
 		core.ActionGemGain:   gem.HandleGain(gems, wallets, system),
 		// vat
 		core.ActionVaultLock:    vat.HandleLock(gems, vaults, assetz),
