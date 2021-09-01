@@ -50,7 +50,7 @@ func init() {
 	flag.Int64Var(&_flag.cashier.capacity, "cashier.capacity", 1, "custom capacity for worker cashier")
 
 	// worker.datadog.Config
-	flag.DurationVar(&_flag.datadog.interval, "datadog.interval", 5*time.Minute, "custom datadog trigger interval")
+	flag.DurationVar(&_flag.datadog.interval, "datadog.interval", 10*time.Minute, "custom datadog trigger interval")
 }
 
 func main() {

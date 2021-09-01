@@ -34,12 +34,19 @@ func (w *Keeper) Run(ctx context.Context) error {
 	log := logger.FromContext(ctx).WithField("worker", "keeper")
 	ctx = logger.WithContext(ctx, log)
 
+	dur := time.Millisecond
+	interval := 5 * time.Minute
+
 	for {
 		select {
 		case <-ctx.Done():
 			return ctx.Err()
-		case t := <-time.After(5 * time.Minute):
-			_ = w.run(ctx, t)
+		case t := <-time.After(dur):
+			if err := w.run(ctx, t); err != nil {
+				dur = time.Second
+			} else {
+				dur = t.Truncate(interval).Add(interval).Sub(t)
+			}
 		}
 	}
 }
