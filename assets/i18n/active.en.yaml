@@ -32,27 +32,27 @@ vault_locked: |
   - ID: {{.TraceID}}
   - Locked amount: {{.Amount}} {{.Symbol}}
   - Starting time: {{.CreatedAt}} (UTC)
-  - End Time: {{.ExpiredAt}} （UTC）
+  - End Time: {{.ExpiredAt}} (UTC)
 
 vault_released: |
   ✅ Unlocked successfully
 
   - ID：{{.TraceID}}
   - Locked amount: {{.Amount}} {{.Symbol}}
-  {{ if .Reward -}}
+  {{ if .Reward }}
   - Lock Reward: {{.Reward}} {{.Symbol}}
-  {{ end }}
-  {{ if .Penalty -}}
+  {{ end -}}
+  {{ if .Penalty }}
   - Unlock Penalty: {{.Penalty}} {{.Symbol}}
-  {{ end }}
+  {{ end -}}
   - Starting time: {{.CreatedAt}} (UTC)
-  - End Time: {{.ExpiredAt}} （UTC）
+  - End Time: {{.ExpiredAt}} (UTC)
   - Unlock Time: {{.ReleasedAt}} (UTC)
 
 donated: |
   ✅ Donate successfully
 
   - Amount: {{.Amount}} {{.Symbol}}
-  - Time: {{.DonateAt}}（UTC）
+  - Time: {{.DonateAt}} (UTC)
 
   Thanks!
