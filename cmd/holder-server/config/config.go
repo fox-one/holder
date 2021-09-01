@@ -27,8 +27,6 @@ type (
 	}
 
 	Group struct {
-		// 节点管理员 mixin id
-		Admins    []string `json:"admins,omitempty"`
 		Members   []string `json:"members,omitempty"`
 		Threshold uint8    `json:"threshold,omitempty"`
 	}

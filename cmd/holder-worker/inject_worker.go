@@ -6,6 +6,7 @@ import (
 	"github.com/fox-one/holder/worker/assigner"
 	"github.com/fox-one/holder/worker/cashier"
 	"github.com/fox-one/holder/worker/datadog"
+	"github.com/fox-one/holder/worker/events"
 	"github.com/fox-one/holder/worker/messenger"
 	"github.com/fox-one/holder/worker/payee"
 	"github.com/fox-one/holder/worker/spentsync"
@@ -25,6 +26,7 @@ var workerSet = wire.NewSet(
 	assigner.New,
 	provideDataDogConfig,
 	datadog.New,
+	events.New,
 	provideWorkers,
 )
 
@@ -47,12 +49,13 @@ func provideWorkers(
 	a *cashier.Cashier,
 	b *messenger.Messenger,
 	c *payee.Payee,
+	d *events.Events,
 	e *spentsync.SpentSync,
 	f *txsender.Sender,
 	g *syncer.Syncer,
 	h *assigner.Assigner,
 	i *datadog.Datadog,
 ) []worker.Worker {
-	workers := []worker.Worker{a, b, c, e, f, g, h, i}
+	workers := []worker.Worker{a, b, c, d, e, f, g, h, i}
 	return workers
 }

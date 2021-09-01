@@ -39,7 +39,6 @@ func provideWalletServiceConfig(cfg *config.Config) wallet.Config {
 
 func provideSystem(cfg *config.Config) *core.System {
 	return &core.System{
-		Admins:       cfg.Group.Admins,
 		ClientID:     cfg.Dapp.ClientID,
 		ClientSecret: cfg.Dapp.ClientSecret,
 		Members:      cfg.Group.Members,

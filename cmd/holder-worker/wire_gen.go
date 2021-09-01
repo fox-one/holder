@@ -23,6 +23,7 @@ import (
 	"github.com/fox-one/holder/worker/assigner"
 	"github.com/fox-one/holder/worker/cashier"
 	"github.com/fox-one/holder/worker/datadog"
+	"github.com/fox-one/holder/worker/events"
 	"github.com/fox-one/holder/worker/messenger"
 	"github.com/fox-one/holder/worker/payee"
 	"github.com/fox-one/holder/worker/spentsync"
@@ -68,13 +69,14 @@ func buildApp(cfg *config.Config) (app, error) {
 	}
 	notifierConfig := provideNotifierConfig(cfg)
 	notifier := provideNotifier(system, assetService, messageStore, gemStore, vaultStore, userStore, localizer, notifierConfig)
+	eventsEvents := events.New(transactionStore, notifier, store)
 	spentSync := spentsync.New(walletStore, notifier)
 	sender := txsender.New(walletStore)
 	syncerSyncer := syncer.New(walletStore, walletService, store)
 	assignerAssigner := assigner.New(walletStore, system)
 	datadogConfig := provideDataDogConfig(cfg)
 	datadogDatadog := datadog.New(walletStore, store, messageService, datadogConfig)
-	v := provideWorkers(cashierCashier, messengerMessenger, payeePayee, spentSync, sender, syncerSyncer, assignerAssigner, datadogDatadog)
+	v := provideWorkers(cashierCashier, messengerMessenger, payeePayee, eventsEvents, spentSync, sender, syncerSyncer, assignerAssigner, datadogDatadog)
 	server := node.New(system, store)
 	mux := provideRoute(server)
 	serverServer := provideServer(mux)
