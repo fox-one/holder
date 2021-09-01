@@ -39,10 +39,10 @@ vault_released: |
 
   - ID：{{.TraceID}}
   - 锁仓金额：{{.Amount}} {{.Symbol}}
-  {{ if .Reward }}
+  {{ if .Reward -}}
   - 锁仓奖励：{{.Reward}} {{.Symbol}}
   {{ end -}}
-  {{ if .Penalty }}
+  {{ if .Penalty -}}
   - 提前赎回罚金：{{.Penalty}} {{.Symbol}}
   {{ end -}}
   - 锁仓时间：{{.CreatedAt}}（ UTC 时间 ）

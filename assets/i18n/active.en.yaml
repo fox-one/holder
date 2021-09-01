@@ -39,10 +39,10 @@ vault_released: |
 
   - ID：{{.TraceID}}
   - Locked amount: {{.Amount}} {{.Symbol}}
-  {{ if .Reward }}
+  {{ if .Reward -}}
   - Lock Reward: {{.Reward}} {{.Symbol}}
   {{ end -}}
-  {{ if .Penalty }}
+  {{ if .Penalty -}}
   - Unlock Penalty: {{.Penalty}} {{.Symbol}}
   {{ end -}}
   - Starting time: {{.CreatedAt}} (UTC)
