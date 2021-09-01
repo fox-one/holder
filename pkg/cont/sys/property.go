@@ -11,6 +11,7 @@ import (
 const (
 	SystemVersionKey    = "system_version"
 	SystemProfitRateKey = "system_profit_rate"
+	SystemDonateFeeRate = "system_donate_fee_rate"
 )
 
 func HandleProperty(

@@ -19,6 +19,9 @@ type CreateRequest struct {
 	// follow id to track tx (uuid)
 	FollowID string `json:"follow_id,omitempty" format:"uuid" valid:"uuid,required"`
 	// tx parameters
+	// lock ["bit","8","int","120","int","120"]
+	// unlock ["bit","9","uuid","{vault_id}"]
+	// donate ["bit","6"]
 	Parameters []string `json:"parameters,omitempty" valid:"required"`
 	// payment asset id (optional)
 	AssetID string `json:"asset_id,omitempty" format:"uuid"`
