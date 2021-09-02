@@ -34,7 +34,7 @@ func buildServer(cfg *config.Config) (*server.Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	userConfig := _wireConfigValue
+	userConfig := provideUserServiceConfig(cfg)
 	userService := user2.New(client, userConfig)
 	sessionConfig := provideSessionConfig(cfg)
 	coreSession := session.New(userStore, userService, sessionConfig)
@@ -50,7 +50,7 @@ func buildServer(cfg *config.Config) (*server.Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	notifierConfig := _wireNotifierConfigValue
+	notifierConfig := _wireConfigValue
 	coreNotifier := notifier.New(system, assetService, messageStore, gemStore, vaultStore, userStore, localizer, notifierConfig)
 	apiServer := api.New(coreSession, userService, gemStore, vaultStore, transactionStore, walletService, coreNotifier, system)
 	rpcServer := rpc.New(gemStore, vaultStore, transactionStore)
@@ -60,6 +60,5 @@ func buildServer(cfg *config.Config) (*server.Server, error) {
 }
 
 var (
-	_wireConfigValue         = user2.Config{}
-	_wireNotifierConfigValue = notifier.Config{}
+	_wireConfigValue = notifier.Config{}
 )

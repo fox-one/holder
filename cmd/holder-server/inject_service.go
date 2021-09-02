@@ -17,13 +17,19 @@ var serviceSet = wire.NewSet(
 	provideMixinClient,
 	asset.New,
 	message.New,
-	wire.Value(user.Config{}),
+	provideUserServiceConfig,
 	user.New,
 	provideSystem,
 	provideWalletServiceConfig,
 	wallet.New,
 	provideLocalizer,
 )
+
+func provideUserServiceConfig(cfg *config.Config) user.Config {
+	return user.Config{
+		ClientSecret: cfg.Dapp.ClientSecret,
+	}
+}
 
 func provideMixinClient(cfg *config.Config) (*mixin.Client, error) {
 	return mixin.NewFromKeystore(&cfg.Dapp.Keystore)
