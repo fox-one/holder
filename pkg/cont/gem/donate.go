@@ -26,6 +26,7 @@ func HandleDonate(gems core.GemStore, properties property.Store) cont.HandlerFun
 
 		if gem.Version < r.Version {
 			gem.Amount = gem.Amount.Add(r.Amount)
+			gem.Reward = gem.Reward.Add(r.Amount)
 
 			v, err := properties.Get(ctx, sys.SystemDonateFeeRate)
 			if err != nil {
@@ -36,6 +37,7 @@ func HandleDonate(gems core.GemStore, properties property.Store) cont.HandlerFun
 			rate := number.Decimal(v.String())
 			if fee := r.Amount.Mul(rate).Truncate(8); fee.IsPositive() && fee.LessThanOrEqual(r.Amount) {
 				gem.Amount = gem.Amount.Sub(fee)
+				gem.Reward = gem.Reward.Sub(fee)
 				gem.Profit = gem.Profit.Add(fee)
 			}
 
