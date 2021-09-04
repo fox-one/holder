@@ -128,7 +128,7 @@ func (w *Datadog) run(ctx context.Context) error {
 
 			if k == "sync_checkpoint" {
 				t := v.Time()
-				report = (!t.IsZero() && time.Since(t) > 5*time.Minute) || report
+				report = (!t.IsZero() && time.Since(t) > 12*time.Hour) || report
 			}
 		}
 

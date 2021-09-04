@@ -40,8 +40,11 @@ func GetReward(gem *core.Gem, vat *core.Vault) decimal.Decimal {
 		amount = vat.Liquidity.Div(gem.Liquidity).Mul(amount).Truncate(8)
 	}
 
-	return decimal.Max(
-		amount.Sub(vat.Amount),
-		decimal.Zero,
+	return decimal.Min(
+		decimal.Max(
+			amount.Sub(vat.Amount),
+			decimal.Zero,
+		),
+		gem.Reward,
 	)
 }

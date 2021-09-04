@@ -11,6 +11,7 @@ func Gem(gem *core.Gem) *api.Gem {
 		Name:      gem.Name,
 		Logo:      gem.Logo,
 		Amount:    gem.Amount.String(),
+		Reward:    gem.Reward.String(),
 		Liquidity: gem.Liquidity.String(),
 		Profit:    gem.Profit.String(),
 	}

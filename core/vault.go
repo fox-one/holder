@@ -30,7 +30,7 @@ type (
 		Duration    int64           `json:"duration,omitempty"`
 		MinDuration int64           `json:"min_duration,omitempty"`
 		Amount      decimal.Decimal `sql:"type:decimal(64,8)" json:"amount,omitempty"`
-		Liquidity   decimal.Decimal `sql:"type:decimal(64,8)" json:"liquidity,omitempty"`
+		Liquidity   decimal.Decimal `sql:"type:decimal(64,12)" json:"liquidity,omitempty"`
 		Reward      decimal.Decimal `sql:"type:decimal(64,8)" json:"reward,omitempty"`
 		Penalty     decimal.Decimal `sql:"type:decimal(64,8)" json:"penalty,omitempty"`
 	}

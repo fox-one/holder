@@ -49,8 +49,9 @@ message Gem {
     string name = 2;
     string logo = 3;
     string amount = 4;
-    string liquidity = 5;
-    string profit = 6;
+    string reward = 5;
+    string liquidity = 6;
+    string profit = 7;
 }
 
 message Redeem {

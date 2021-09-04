@@ -63,9 +63,9 @@ func HandleLock(
 		}
 
 		if gem.Liquidity.IsPositive() {
-			vat.Liquidity = vat.Amount.Div(gem.Amount).Mul(gem.Liquidity).Truncate(8)
+			vat.Liquidity = vat.Amount.Div(gem.Amount).Mul(gem.Liquidity).Truncate(12)
 		} else {
-			vat.Liquidity = decimal.NewFromInt(dur).Div(secondsOfYear).Mul(vat.Amount).Truncate(8)
+			vat.Liquidity = decimal.NewFromInt(dur).Div(secondsOfYear).Mul(vat.Amount).Truncate(12)
 		}
 
 		if err := require(vat.Liquidity.IsPositive(), "insufficient-liquidity"); err != nil {

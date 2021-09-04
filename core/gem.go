@@ -16,8 +16,10 @@ type (
 		Name      string          `sql:"size:64" json:"name,omitempty"`
 		Logo      string          `sql:"size:256" json:"logo,omitempty"`
 		Amount    decimal.Decimal `sql:"type:decimal(64,8)" json:"amount,omitempty"`
-		Liquidity decimal.Decimal `sql:"type:decimal(64,8)" json:"liquidity,omitempty"`
+		Reward    decimal.Decimal `sql:"type:decimal(64,8)" json:"reward,omitempty"`
+		Liquidity decimal.Decimal `sql:"type:decimal(64,12)" json:"liquidity,omitempty"`
 		Profit    decimal.Decimal `sql:"type:decimal(64,8)" json:"profit,omitempty"`
+		Price     decimal.Decimal `sql:"type:decimal(24,8)" json:"price,omitempty"`
 	}
 
 	GemStore interface {

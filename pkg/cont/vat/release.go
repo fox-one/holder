@@ -65,9 +65,11 @@ func HandleRelease(
 		if gem.Version < r.Version {
 			gem.Liquidity = gem.Liquidity.Sub(vault.Liquidity)
 			gem.Amount = gem.Amount.Sub(vault.Amount).Sub(vault.Reward)
+			gem.Reward = gem.Reward.Sub(vault.Reward)
 
 			if vault.Penalty.IsPositive() {
 				gem.Amount = gem.Amount.Add(vault.Penalty)
+				gem.Reward = gem.Reward.Add(vault.Penalty)
 
 				v, err := properties.Get(ctx, sys.SystemProfitRateKey)
 				if err != nil {
@@ -79,6 +81,7 @@ func HandleRelease(
 				profit := vault.Penalty.Mul(rate).Truncate(8)
 				if profit.IsPositive() && profit.LessThanOrEqual(vault.Penalty) {
 					gem.Amount = gem.Amount.Sub(profit)
+					gem.Reward = gem.Reward.Sub(profit)
 					gem.Profit = gem.Profit.Add(profit)
 				}
 			}
@@ -94,16 +97,16 @@ func HandleRelease(
 }
 
 func unlock(r *cont.Request, gem *core.Gem, vault *core.Vault) error {
+	if err := require(r.Sender == vault.UserID, "not-allowed"); err != nil {
+		return err
+	}
+
 	if err := require(vault.Status == core.VaultStatusLocking, "already-unlocked"); err != nil {
 		return err
 	}
 
 	dur := int64(r.Now.Sub(vault.CreatedAt).Seconds())
 	if err := require(dur >= vault.MinDuration, "not-due"); err != nil {
-		return err
-	}
-
-	if err := require(r.Sender == vault.UserID || dur >= vault.Duration, "not-allowed"); err != nil {
 		return err
 	}
 
