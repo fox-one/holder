@@ -248,6 +248,7 @@ func (n *notifier) handleVaultReleased(ctx context.Context, b *compose.Outbox, t
 	args := map[string]interface{}{
 		"TraceID":    vault.TraceID,
 		"Amount":     vault.Amount.String(),
+		"FillAmount": vault.Amount.Add(vault.Reward).Sub(vault.Penalty).String(),
 		"Symbol":     n.fetchAssetSymbol(ctx, vault.AssetID),
 		"CreatedAt":  vault.CreatedAt.Format(time.RFC3339),
 		"ExpiredAt":  vault.EndAt().Format(time.RFC3339),

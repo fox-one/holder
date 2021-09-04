@@ -45,6 +45,7 @@ vault_released: |
   {{ if .Penalty -}}
   - 提前赎回罚金：{{.Penalty}} {{.Symbol}}
   {{ end -}}
+  - 到账金额：{{.FillAmount}} {{.Symbol}}
   - 锁仓时间：{{.CreatedAt}}（ UTC 时间 ）
   - 到期时间：{{.ExpiredAt}}（ UTC 时间 ）
   - 赎回时间：{{.ReleasedAt}}（ UTC 时间 ）

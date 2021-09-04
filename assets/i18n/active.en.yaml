@@ -38,13 +38,14 @@ vault_released: |
   ✅ Unlock successfully
 
   - ID: {{.TraceID}}
-  - Locked amount: {{.Amount}} {{.Symbol}}
+  - Locked Amount: {{.Amount}} {{.Symbol}}
   {{ if .Reward -}}
-  - Lock Reward: {{.Reward}} {{.Symbol}}
+  - Reward: {{.Reward}} {{.Symbol}}
   {{ end -}}
   {{ if .Penalty -}}
-  - Unlock Penalty: {{.Penalty}} {{.Symbol}}
+  - Penalty: {{.Penalty}} {{.Symbol}}
   {{ end -}}
+  - Final Amount: {{.FillAmount}} {{.Symbol}}
   - Starting time: {{.CreatedAt}} (UTC)
   - End Time: {{.ExpiredAt}} (UTC)
   - Unlock Time: {{.ReleasedAt}} (UTC)
