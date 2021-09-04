@@ -33,7 +33,6 @@ func New(
 	gems core.GemStore,
 	vaults core.VaultStore,
 	parliaments core.Parliament,
-	assetz core.AssetService,
 	system *core.System,
 ) *Payee {
 	wallets = wallet.BindTransferVersion(wallets)
@@ -50,7 +49,7 @@ func New(
 		core.ActionGemDonate: gem.HandleDonate(gems, properties),
 		core.ActionGemGain:   gem.HandleGain(gems, wallets, system),
 		// vat
-		core.ActionVaultLock:    vat.HandleLock(gems, vaults, assetz),
+		core.ActionVaultLock:    vat.HandleLock(gems, vaults),
 		core.ActionVaultRelease: vat.HandleRelease(gems, vaults, wallets, properties),
 	}
 

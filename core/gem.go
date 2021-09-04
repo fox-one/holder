@@ -25,6 +25,7 @@ type (
 	GemStore interface {
 		Find(ctx context.Context, id string) (*Gem, error)
 		Save(ctx context.Context, gem *Gem, version int64) error
+		UpdateInfo(ctx context.Context, gem *Gem) error
 		List(ctx context.Context) ([]*Gem, error)
 	}
 )

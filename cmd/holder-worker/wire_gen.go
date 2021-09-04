@@ -27,6 +27,7 @@ import (
 	"github.com/fox-one/holder/worker/keeper"
 	"github.com/fox-one/holder/worker/messenger"
 	"github.com/fox-one/holder/worker/payee"
+	"github.com/fox-one/holder/worker/pricesync"
 	"github.com/fox-one/holder/worker/spentsync"
 	"github.com/fox-one/holder/worker/syncer"
 	"github.com/fox-one/holder/worker/txsender"
@@ -62,7 +63,7 @@ func buildApp(cfg *config.Config) (app, error) {
 	userService := user.New(client, userConfig)
 	assetService := asset.New(client)
 	coreParliament := parliament.New(messageStore, userService, assetService, walletService, system)
-	payeePayee := payee.New(walletStore, walletService, transactionStore, proposalStore, store, gemStore, vaultStore, coreParliament, assetService, system)
+	payeePayee := payee.New(walletStore, walletService, transactionStore, proposalStore, store, gemStore, vaultStore, coreParliament, system)
 	userStore := user2.New(db)
 	localizer, err := provideLocalizer(cfg)
 	if err != nil {
@@ -78,7 +79,8 @@ func buildApp(cfg *config.Config) (app, error) {
 	datadogConfig := provideDataDogConfig(cfg)
 	datadogDatadog := datadog.New(walletStore, store, messageService, datadogConfig)
 	keeperKeeper := keeper.New(vaultStore, walletService, system)
-	v := provideWorkers(cashierCashier, messengerMessenger, payeePayee, eventsEvents, spentSync, sender, syncerSyncer, assignerAssigner, datadogDatadog, keeperKeeper)
+	pricesyncSyncer := pricesync.New(gemStore, assetService)
+	v := provideWorkers(cashierCashier, messengerMessenger, payeePayee, eventsEvents, spentSync, sender, syncerSyncer, assignerAssigner, datadogDatadog, keeperKeeper, pricesyncSyncer)
 	server := node.New(system, store)
 	mux := provideRoute(server)
 	serverServer := provideServer(mux)

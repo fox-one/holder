@@ -10,6 +10,7 @@ import (
 	"github.com/fox-one/holder/worker/keeper"
 	"github.com/fox-one/holder/worker/messenger"
 	"github.com/fox-one/holder/worker/payee"
+	"github.com/fox-one/holder/worker/pricesync"
 	"github.com/fox-one/holder/worker/spentsync"
 	"github.com/fox-one/holder/worker/syncer"
 	"github.com/fox-one/holder/worker/txsender"
@@ -29,6 +30,7 @@ var workerSet = wire.NewSet(
 	datadog.New,
 	events.New,
 	keeper.New,
+	pricesync.New,
 	provideWorkers,
 )
 
@@ -58,8 +60,9 @@ func provideWorkers(
 	h *assigner.Assigner,
 	i *datadog.Datadog,
 	j *keeper.Keeper,
+	k *pricesync.Syncer,
 ) []worker.Worker {
-	workers := []worker.Worker{a, b, c, d, e, f, g, h, i}
+	workers := []worker.Worker{a, b, c, d, e, f, g, h, i, k}
 	if _flag.keeper {
 		workers = append(workers, j)
 	}

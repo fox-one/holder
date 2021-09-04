@@ -65,6 +65,16 @@ func (s *gemStore) Save(_ context.Context, gem *core.Gem, version int64) error {
 	return nil
 }
 
+func (s *gemStore) UpdateInfo(_ context.Context, gem *core.Gem) error {
+	updates := map[string]interface{}{
+		"name":  gem.Name,
+		"logo":  gem.Logo,
+		"price": gem.Price,
+	}
+
+	return s.db.Update().Model(gem).Where("id = ?", gem.ID).Updates(updates).Error
+}
+
 func (s *gemStore) List(_ context.Context) ([]*core.Gem, error) {
 	var gems []*core.Gem
 	if err := s.db.View().Find(&gems).Error; err != nil {

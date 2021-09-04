@@ -52,6 +52,7 @@ message Gem {
     string reward = 5;
     string liquidity = 6;
     string profit = 7;
+    string price = 8;
 }
 
 message Redeem {

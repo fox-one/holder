@@ -10,7 +10,6 @@ import (
 func HandleLock(
 	gems core.GemStore,
 	vaults core.VaultStore,
-	assetz core.AssetService,
 ) cont.HandlerFunc {
 	secondsOfYear := decimal.NewFromInt(365 * 24 * 60 * 60)
 
@@ -36,17 +35,6 @@ func HandleLock(
 		if err != nil {
 			log.WithError(err).Errorln("gems.Find")
 			return err
-		}
-
-		if gem.Version == 0 {
-			asset, err := assetz.Find(ctx, r.AssetID)
-			if err != nil {
-				log.WithError(err).Errorln("assetz.Find")
-				return err
-			}
-
-			gem.Name = asset.Name
-			gem.Logo = asset.Logo
 		}
 
 		vat := &core.Vault{
