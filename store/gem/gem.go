@@ -48,6 +48,7 @@ func (s *gemStore) Save(_ context.Context, gem *core.Gem, version int64) error {
 
 	updates := map[string]interface{}{
 		"amount":    gem.Amount,
+		"reward":    gem.Reward,
 		"liquidity": gem.Liquidity,
 		"profit":    gem.Profit,
 		"version":   version,
