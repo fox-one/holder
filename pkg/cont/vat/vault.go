@@ -34,17 +34,17 @@ func From(r *cont.Request, vaults core.VaultStore) (*core.Vault, error) {
 	return vat, nil
 }
 
-func GetReward(gem *core.Gem, vat *core.Vault) decimal.Decimal {
-	amount := gem.Amount
-	if vat.Liquidity.LessThan(gem.Liquidity) {
-		amount = vat.Liquidity.Div(gem.Liquidity).Mul(amount).Truncate(8)
+func GetReward(pool *core.Pool, vault *core.Vault) decimal.Decimal {
+	share := pool.Share
+	if vault.Liquidity.LessThan(pool.Liquidity) {
+		share = vault.Liquidity.Div(pool.Liquidity).Mul(share).Truncate(12)
 	}
 
 	return decimal.Min(
 		decimal.Max(
-			amount.Sub(vat.Amount),
+			share.Sub(vault.Share()).Truncate(8),
 			decimal.Zero,
 		),
-		gem.Reward,
+		pool.Reward,
 	)
 }

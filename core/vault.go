@@ -48,3 +48,9 @@ func (vault *Vault) EndAt() time.Time {
 	dur := time.Duration(vault.Duration) * time.Second
 	return vault.CreatedAt.Add(dur)
 }
+
+func (vault *Vault) Share() decimal.Decimal {
+	const secondsOfYear int64 = 365 * 24 * 60 * 60
+	dur := decimal.NewFromInt(vault.Duration).Div(decimal.NewFromInt(secondsOfYear))
+	return vault.Amount.Mul(dur).Truncate(12)
+}

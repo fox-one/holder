@@ -5,8 +5,8 @@ ActionSysProperty: set property
 ActionProposalMake: make a proposal
 ActionProposalShout: shout for a proposal
 ActionProposalVote: vote a proposal
-ActionGemDonate: donate
-ActionGemGain: withdraw profit
+ActionPoolDonate: donate
+ActionPoolGain: withdraw profit
 ActionVaultLock: lock
 ActionVaultRelease: unlock
 

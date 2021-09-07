@@ -15,8 +15,8 @@ import (
 	user2 "github.com/fox-one/holder/service/user"
 	"github.com/fox-one/holder/service/wallet"
 	"github.com/fox-one/holder/session"
-	"github.com/fox-one/holder/store/gem"
 	"github.com/fox-one/holder/store/message"
+	"github.com/fox-one/holder/store/pool"
 	"github.com/fox-one/holder/store/transaction"
 	"github.com/fox-one/holder/store/user"
 	"github.com/fox-one/holder/store/vault"
@@ -38,7 +38,7 @@ func buildServer(cfg *config.Config) (*server.Server, error) {
 	userService := user2.New(client, userConfig)
 	sessionConfig := provideSessionConfig(cfg)
 	coreSession := session.New(userStore, userService, sessionConfig)
-	gemStore := gem.New(db)
+	poolStore := pool.New(db)
 	vaultStore := vault.New(db)
 	transactionStore := transaction.New(db)
 	walletConfig := provideWalletServiceConfig(cfg)
@@ -51,9 +51,9 @@ func buildServer(cfg *config.Config) (*server.Server, error) {
 		return nil, err
 	}
 	notifierConfig := _wireConfigValue
-	coreNotifier := notifier.New(system, assetService, messageStore, gemStore, vaultStore, userStore, localizer, notifierConfig)
-	apiServer := api.New(coreSession, userService, gemStore, vaultStore, transactionStore, walletService, coreNotifier, system)
-	rpcServer := rpc.New(gemStore, vaultStore, transactionStore)
+	coreNotifier := notifier.New(system, assetService, messageStore, poolStore, vaultStore, userStore, localizer, notifierConfig)
+	apiServer := api.New(coreSession, userService, poolStore, vaultStore, transactionStore, walletService, coreNotifier, system)
+	rpcServer := rpc.New(poolStore, vaultStore, transactionStore)
 	mux := provideRoute(apiServer, rpcServer, coreSession)
 	serverServer := provideServer(mux)
 	return serverServer, nil

@@ -19,8 +19,8 @@ const (
 	ActionProposalMake
 	ActionProposalShout
 	ActionProposalVote
-	ActionGemDonate
-	ActionGemGain
+	ActionPoolDonate
+	ActionPoolGain
 	ActionVaultLock
 	ActionVaultRelease
 )

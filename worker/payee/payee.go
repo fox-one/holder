@@ -9,7 +9,7 @@ import (
 
 	"github.com/fox-one/holder/core"
 	"github.com/fox-one/holder/pkg/cont"
-	"github.com/fox-one/holder/pkg/cont/gem"
+	"github.com/fox-one/holder/pkg/cont/pool"
 	"github.com/fox-one/holder/pkg/cont/proposal"
 	"github.com/fox-one/holder/pkg/cont/sys"
 	"github.com/fox-one/holder/pkg/cont/vat"
@@ -30,7 +30,7 @@ func New(
 	transactions core.TransactionStore,
 	proposals core.ProposalStore,
 	properties property.Store,
-	gems core.GemStore,
+	pools core.PoolStore,
 	vaults core.VaultStore,
 	parliaments core.Parliament,
 	system *core.System,
@@ -45,12 +45,12 @@ func New(
 		core.ActionProposalMake:  proposal.HandleMake(proposals, walletz, parliaments, system),
 		core.ActionProposalShout: proposal.HandleShout(proposals, parliaments, system),
 		core.ActionProposalVote:  proposal.HandleVote(proposals, parliaments, walletz, system),
-		// gem
-		core.ActionGemDonate: gem.HandleDonate(gems, properties),
-		core.ActionGemGain:   gem.HandleGain(gems, wallets, system),
+		// pool
+		core.ActionPoolDonate: pool.HandleDonate(pools, properties),
+		core.ActionPoolGain:   pool.HandleGain(pools, wallets, system),
 		// vat
-		core.ActionVaultLock:    vat.HandleLock(gems, vaults),
-		core.ActionVaultRelease: vat.HandleRelease(gems, vaults, wallets, properties),
+		core.ActionVaultLock:    vat.HandleLock(pools, vaults),
+		core.ActionVaultRelease: vat.HandleRelease(pools, vaults, wallets, properties),
 	}
 
 	return &Payee{
@@ -66,7 +66,7 @@ type Payee struct {
 	wallets      core.WalletStore
 	properties   property.Store
 	transactions core.TransactionStore
-	gems         core.GemStore
+	pools        core.PoolStore
 	vaults       core.VaultStore
 	system       *core.System
 	actions      map[core.Action]cont.HandlerFunc

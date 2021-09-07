@@ -33,7 +33,39 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/gems": {
+        "/actions": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "actions"
+                ],
+                "summary": "request payment code",
+                "parameters": [
+                    {
+                        "description": "request payments",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/actions.CreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/actions.CreateResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/info": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -42,14 +74,90 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Gems"
+                    "system"
                 ],
-                "summary": "list all gems",
+                "summary": "Show system info",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/api.Resp_ListGems"
+                            "$ref": "#/definitions/system.InfoResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "login with mixin oauth code",
+                "parameters": [
+                    {
+                        "description": "request login",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/user.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.LoginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/pools": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pools"
+                ],
+                "summary": "list all pools",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Resp_ListPools"
+                        }
+                    }
+                }
+            }
+        },
+        "/time": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "system"
+                ],
+                "summary": "Show server time",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/system.TimeResponse"
                         }
                     }
                 }
@@ -149,7 +257,7 @@ var doc = `{
                 }
             }
         },
-        "/vaults/{vault_id}": {
+        "/vaults/{id}": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -165,7 +273,7 @@ var doc = `{
                     {
                         "type": "string",
                         "description": "vault id",
-                        "name": "vault_id",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -182,7 +290,61 @@ var doc = `{
         }
     },
     "definitions": {
-        "api.Gem": {
+        "actions.CreateRequest": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "description": "payment amount (optional)",
+                    "type": "number"
+                },
+                "asset_id": {
+                    "description": "payment asset id (optional)",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "follow_id": {
+                    "description": "follow id to track tx (uuid)",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "parameters": {
+                    "description": "tx parameters\nlock [\"bit\",\"8\",\"int\",\"120\",\"int\",\"120\"]\nunlock [\"bit\",\"9\",\"uuid\",\"{vault_id}\"]\ndonate [\"bit\",\"6\"]",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "actions.CreateResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "multisig payment code",
+                    "type": "string"
+                },
+                "code_url": {
+                    "description": "multisig payment code url",
+                    "type": "string"
+                },
+                "memo": {
+                    "description": "payment memo",
+                    "type": "string"
+                }
+            }
+        },
+        "api.Pagination": {
+            "type": "object",
+            "properties": {
+                "has_next": {
+                    "type": "boolean"
+                },
+                "next_cursor": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.Pool": {
             "type": "object",
             "properties": {
                 "amount": {
@@ -200,29 +362,27 @@ var doc = `{
                 "name": {
                     "type": "string"
                 },
+                "price": {
+                    "type": "string"
+                },
                 "profit": {
                     "type": "string"
-                }
-            }
-        },
-        "api.Pagination": {
-            "type": "object",
-            "properties": {
-                "has_next": {
-                    "type": "boolean"
                 },
-                "next_cursor": {
+                "reward": {
+                    "type": "string"
+                },
+                "share": {
                     "type": "string"
                 }
             }
         },
-        "api.Resp_ListGems": {
+        "api.Resp_ListPools": {
             "type": "object",
             "properties": {
-                "gems": {
+                "pools": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/api.Gem"
+                        "$ref": "#/definitions/api.Pool"
                     }
                 }
             }
@@ -300,9 +460,6 @@ var doc = `{
                 "duration": {
                     "type": "integer"
                 },
-                "gem": {
-                    "$ref": "#/definitions/api.Gem"
-                },
                 "id": {
                     "type": "string"
                 },
@@ -315,13 +472,93 @@ var doc = `{
                 "penalty": {
                     "type": "string"
                 },
+                "pool": {
+                    "$ref": "#/definitions/api.Pool"
+                },
                 "reward": {
+                    "type": "string"
+                },
+                "share": {
                     "type": "string"
                 },
                 "status": {
                     "type": "integer"
                 },
                 "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "system.InfoResponse": {
+            "type": "object",
+            "properties": {
+                "members": {
+                    "description": "multisig members",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "oauth_client_id": {
+                    "description": "oauth client id",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "public_key": {
+                    "type": "string"
+                },
+                "threshold": {
+                    "description": "multisig threshold",
+                    "type": "integer"
+                }
+            }
+        },
+        "system.TimeResponse": {
+            "type": "object",
+            "properties": {
+                "epoch": {
+                    "type": "integer"
+                },
+                "iso": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "mixin oauth code",
+                    "type": "string"
+                }
+            }
+        },
+        "user.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "avatar": {
+                    "description": "user avatar",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "user mixin id",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "language": {
+                    "description": "Preferred language",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "user name",
+                    "type": "string"
+                },
+                "scope": {
+                    "description": "mixin oauth scope",
+                    "type": "string"
+                },
+                "token": {
+                    "description": "mixin oauth token",
                     "type": "string"
                 }
             }

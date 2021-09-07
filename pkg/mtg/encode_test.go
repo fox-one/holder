@@ -1,8 +1,6 @@
 package mtg
 
 import (
-	"crypto/ed25519"
-	"crypto/rand"
 	"encoding/base64"
 	"testing"
 
@@ -18,19 +16,13 @@ func newUUID() uuid.UUID {
 }
 
 func TestEncode(t *testing.T) {
-	pub, pri, _ := ed25519.GenerateKey(rand.Reader)
 	values := []interface{}{1, newUUID(), newUUID()}
 
 	t.Run("encode add action", func(t *testing.T) {
 		body, err := Encode(append(values, decimal.NewFromFloat(0.001))...)
 		require.Nil(t, err)
 
-		data, err := Encrypt(body, pri, pub)
-		require.Nil(t, err)
-
-		t.Log(len(data))
-
-		memo := base64.StdEncoding.EncodeToString(data)
+		memo := base64.StdEncoding.EncodeToString(body)
 		t.Log(len(memo), memo)
 
 		assert.LessOrEqual(t, len(memo), 255)
@@ -40,12 +32,7 @@ func TestEncode(t *testing.T) {
 		body, err := Encode(append(values, newUUID(), decimal.NewFromFloat(2.123))...)
 		require.Nil(t, err)
 
-		data, err := Encrypt(body, pri, pub)
-		require.Nil(t, err)
-
-		t.Log(len(data))
-
-		memo := base64.StdEncoding.EncodeToString(data)
+		memo := base64.StdEncoding.EncodeToString(body)
 		t.Log(len(memo), memo)
 
 		assert.LessOrEqual(t, len(memo), 255)

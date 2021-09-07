@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/fox-one/holder/cmd/holder-server/config"
-	"github.com/fox-one/holder/store/gem"
 	"github.com/fox-one/holder/store/message"
+	"github.com/fox-one/holder/store/pool"
 	"github.com/fox-one/holder/store/proposal"
 	"github.com/fox-one/holder/store/transaction"
 	"github.com/fox-one/holder/store/user"
@@ -23,7 +23,7 @@ var storeSet = wire.NewSet(
 	wallet.New,
 	message.New,
 	propertystore.New,
-	gem.New,
+	pool.New,
 )
 
 func provideDatabase(cfg *config.Config) (*db.DB, error) {

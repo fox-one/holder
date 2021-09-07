@@ -19,9 +19,9 @@ enum Action {
     ProposalMake = 3;
     ProposalShout = 4;
     ProposalVote = 5;
-    // Gem
-    GemDonate = 6;
-    GemGain = 7;
+    // Pool
+    PoolDonate = 6;
+    PoolGain = 7;
     // Vault
     VaultLock = 8;
     VaultRelease = 9;
@@ -44,27 +44,16 @@ message Transaction {
     string parameters = 8;
 }
 
-message Gem {
+message Pool {
     string id = 1;
     string name = 2;
     string logo = 3;
     string amount = 4;
-    string reward = 5;
-    string liquidity = 6;
-    string profit = 7;
-    string price = 8;
-}
-
-message Redeem {
-    string id = 1;
-    // @inject_tag: swaggertype:"string" format:"date"
-    google.protobuf.Timestamp created_at = 2;
-    string vault_id = 3;
-    string user_id = 4;
-    string amount = 5;
+    string share = 5;
     string reward = 6;
-    string penalty = 7;
-    string liquidity = 8;
+    string liquidity = 7;
+    string profit = 8;
+    string price = 9;
 }
 
 message Vault {
@@ -81,14 +70,15 @@ message Vault {
     int64  duration = 6;
     int64  min_duration = 7;
     string amount = 8;
-    string liquidity = 9;
-    string reward = 10;
-    string penalty = 11;
-    Gem gem = 12;
+    string share = 9;
+    string liquidity = 10;
+    string reward = 11;
+    string penalty = 12;
+    Pool pool = 13;
 }
 
 message Req {
-    message ListGems {}
+    message ListPools {}
 
     message FindVault{
         // @inject_tag: valid:"uuid,required"
@@ -111,8 +101,8 @@ message Req {
 }
 
 message Resp {
-    message ListGems {
-        repeated Gem gems = 1;
+    message ListPools {
+        repeated Pool pools = 1;
     }
 
     message ListVaults {
@@ -129,8 +119,8 @@ service Holder {
     // tx
     rpc FindTransaction(Req.FindTransaction) returns (Transaction);
     rpc ListTransactions(Req.ListTransactions) returns (Resp.ListTransactions);
-    // Gem
-    rpc ListGems(Req.ListGems) returns (Resp.ListGems);
+    // Pool
+    rpc ListPools(Req.ListPools) returns (Resp.ListPools);
     // vaults
     rpc FindVault(Req.FindVault) returns (Vault);
     rpc ListVaults(Req.ListVaults) returns (Resp.ListVaults);

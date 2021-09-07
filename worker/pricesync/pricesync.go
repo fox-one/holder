@@ -10,17 +10,17 @@ import (
 )
 
 func New(
-	gems core.GemStore,
+	pools core.PoolStore,
 	assetz core.AssetService,
 ) *Syncer {
 	return &Syncer{
-		gems:   gems,
+		pools:  pools,
 		assetz: assetz,
 	}
 }
 
 type Syncer struct {
-	gems   core.GemStore
+	pools  core.PoolStore
 	assetz core.AssetService
 }
 
@@ -39,14 +39,14 @@ func (w *Syncer) Run(ctx context.Context) error {
 }
 
 func (w *Syncer) run(ctx context.Context) error {
-	gems, err := w.gems.List(ctx)
+	pools, err := w.pools.List(ctx)
 	if err != nil {
-		logger.FromContext(ctx).WithError(err).Errorln("gems.List")
+		logger.FromContext(ctx).WithError(err).Errorln("pools.List")
 		return err
 	}
 
-	for _, gem := range gems {
-		asset, err := w.assetz.Find(ctx, gem.ID)
+	for _, pool := range pools {
+		asset, err := w.assetz.Find(ctx, pool.ID)
 		if err != nil {
 			if errors.Is(err, context.Canceled) {
 				return err
@@ -56,12 +56,12 @@ func (w *Syncer) run(ctx context.Context) error {
 			continue
 		}
 
-		gem.Name = asset.Name
-		gem.Logo = asset.Logo
-		gem.Price = asset.Price
+		pool.Name = asset.Name
+		pool.Logo = asset.Logo
+		pool.Price = asset.Price
 
-		if err := w.gems.UpdateInfo(ctx, gem); err != nil {
-			logger.FromContext(ctx).WithError(err).Errorln("gems.UpdateInfo")
+		if err := w.pools.UpdateInfo(ctx, pool); err != nil {
+			logger.FromContext(ctx).WithError(err).Errorln("pools.UpdateInfo")
 			return err
 		}
 	}

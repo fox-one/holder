@@ -13,15 +13,15 @@ func _() {
 	_ = x[ActionProposalMake-3]
 	_ = x[ActionProposalShout-4]
 	_ = x[ActionProposalVote-5]
-	_ = x[ActionGemDonate-6]
-	_ = x[ActionGemGain-7]
+	_ = x[ActionPoolDonate-6]
+	_ = x[ActionPoolGain-7]
 	_ = x[ActionVaultLock-8]
 	_ = x[ActionVaultRelease-9]
 }
 
-const _Action_name = "SysWithdrawSysPropertyProposalMakeProposalShoutProposalVoteGemDonateGemGainVaultLockVaultRelease"
+const _Action_name = "SysWithdrawSysPropertyProposalMakeProposalShoutProposalVotePoolDonatePoolGainVaultLockVaultRelease"
 
-var _Action_index = [...]uint8{0, 11, 22, 34, 47, 59, 68, 75, 84, 96}
+var _Action_index = [...]uint8{0, 11, 22, 34, 47, 59, 69, 77, 86, 98}
 
 func (i Action) String() string {
 	i -= 1

@@ -27,7 +27,7 @@ func New(
 	system *core.System,
 	assetz core.AssetService,
 	messages core.MessageStore,
-	gems core.GemStore,
+	pools core.PoolStore,
 	vats core.VaultStore,
 	users core.UserStore,
 	i18n *localizer.Localizer,
@@ -48,7 +48,7 @@ func New(
 		system:   system,
 		assetz:   asset.Cache(assetz),
 		messages: messages,
-		gems:     gems,
+		pools:    pools,
 		vats:     vats,
 		users:    users,
 		i18n:     i18n,
@@ -60,7 +60,7 @@ type notifier struct {
 	system   *core.System
 	assetz   core.AssetService
 	messages core.MessageStore
-	gems     core.GemStore
+	pools    core.PoolStore
 	vats     core.VaultStore
 	users    core.UserStore
 	i18n     *localizer.Localizer
@@ -196,8 +196,8 @@ func (n *notifier) Transaction(ctx context.Context, tx *core.Transaction) error 
 			err = n.handleVaultLocked(ctx, b, tx, parameters)
 		case core.ActionVaultRelease:
 			err = n.handleVaultReleased(ctx, b, tx, parameters)
-		case core.ActionGemDonate:
-			err = n.handleGemDonated(ctx, b, tx, parameters)
+		case core.ActionPoolDonate:
+			err = n.handlePoolDonated(ctx, b, tx, parameters)
 		}
 
 		if err != nil {
@@ -269,7 +269,7 @@ func (n *notifier) handleVaultReleased(ctx context.Context, b *compose.Outbox, t
 	return nil
 }
 
-func (n *notifier) handleGemDonated(ctx context.Context, b *compose.Outbox, tx *core.Transaction, _ []interface{}) error {
+func (n *notifier) handlePoolDonated(ctx context.Context, b *compose.Outbox, tx *core.Transaction, _ []interface{}) error {
 	args := map[string]interface{}{
 		"Amount":   tx.Amount.String(),
 		"Symbol":   n.fetchAssetSymbol(ctx, tx.AssetID),

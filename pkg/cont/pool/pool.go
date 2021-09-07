@@ -1,4 +1,4 @@
-package gem
+package pool
 
 import (
 	"github.com/fox-one/holder/core"
@@ -8,10 +8,10 @@ import (
 )
 
 func require(condition bool, msg string) error {
-	return cont.Require(condition, "Gem/"+msg)
+	return cont.Require(condition, "Pool/"+msg)
 }
 
-func From(r *cont.Request, gems core.GemStore) (*core.Gem, error) {
+func From(r *cont.Request, pools core.PoolStore) (*core.Pool, error) {
 	ctx := r.Context()
 	log := logger.FromContext(ctx)
 
@@ -20,11 +20,11 @@ func From(r *cont.Request, gems core.GemStore) (*core.Gem, error) {
 		return nil, err
 	}
 
-	gem, err := gems.Find(ctx, id.String())
+	pool, err := pools.Find(ctx, id.String())
 	if err != nil {
 		log.WithError(err).Errorln("vaults.Find")
 		return nil, err
 	}
 
-	return gem, nil
+	return pool, nil
 }

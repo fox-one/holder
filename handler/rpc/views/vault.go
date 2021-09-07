@@ -6,7 +6,7 @@ import (
 	"github.com/fox-one/holder/pkg/cont/vat"
 )
 
-func Vault(vault *core.Vault, gem *core.Gem) *api.Vault {
+func Vault(vault *core.Vault, pool *core.Pool) *api.Vault {
 	v := &api.Vault{
 		Id:        vault.TraceID,
 		CreatedAt: Time(&vault.CreatedAt),
@@ -21,12 +21,12 @@ func Vault(vault *core.Vault, gem *core.Gem) *api.Vault {
 		Penalty:     vault.Penalty.String(),
 	}
 
-	if gem != nil {
+	if pool != nil {
 		if vault.Status == core.VaultStatusLocking {
-			vault.Reward = vat.GetReward(gem, vault)
+			vault.Reward = vat.GetReward(pool, vault)
 		}
 
-		v.Gem = Gem(gem)
+		v.Pool = Pool(pool)
 	}
 
 	return v

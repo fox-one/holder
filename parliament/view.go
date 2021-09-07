@@ -22,9 +22,9 @@ type Flip struct {
 }
 
 type FlipStat struct {
-	Lot string
-	Bid string
-	Tab string
-	Gem string
-	Dai string
+	Lot  string
+	Bid  string
+	Tab  string
+	Pool string
+	Dai  string
 }

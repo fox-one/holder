@@ -1,6 +1,48 @@
 basePath: /api
 definitions:
-  api.Gem:
+  actions.CreateRequest:
+    properties:
+      amount:
+        description: payment amount (optional)
+        type: number
+      asset_id:
+        description: payment asset id (optional)
+        format: uuid
+        type: string
+      follow_id:
+        description: follow id to track tx (uuid)
+        format: uuid
+        type: string
+      parameters:
+        description: |-
+          tx parameters
+          lock ["bit","8","int","120","int","120"]
+          unlock ["bit","9","uuid","{vault_id}"]
+          donate ["bit","6"]
+        items:
+          type: string
+        type: array
+    type: object
+  actions.CreateResponse:
+    properties:
+      code:
+        description: multisig payment code
+        type: string
+      code_url:
+        description: multisig payment code url
+        type: string
+      memo:
+        description: payment memo
+        type: string
+    type: object
+  api.Pagination:
+    properties:
+      has_next:
+        type: boolean
+      next_cursor:
+        type: string
+    type: object
+  api.Pool:
     properties:
       amount:
         type: string
@@ -12,21 +54,20 @@ definitions:
         type: string
       name:
         type: string
+      price:
+        type: string
       profit:
         type: string
-    type: object
-  api.Pagination:
-    properties:
-      has_next:
-        type: boolean
-      next_cursor:
+      reward:
+        type: string
+      share:
         type: string
     type: object
-  api.Resp_ListGems:
+  api.Resp_ListPools:
     properties:
-      gems:
+      pools:
         items:
-          $ref: '#/definitions/api.Gem'
+          $ref: '#/definitions/api.Pool'
         type: array
     type: object
   api.Resp_ListTransactions:
@@ -78,8 +119,6 @@ definitions:
         type: string
       duration:
         type: integer
-      gem:
-        $ref: '#/definitions/api.Gem'
       id:
         type: string
       liquidity:
@@ -88,11 +127,67 @@ definitions:
         type: integer
       penalty:
         type: string
+      pool:
+        $ref: '#/definitions/api.Pool'
       reward:
+        type: string
+      share:
         type: string
       status:
         type: integer
       user_id:
+        type: string
+    type: object
+  system.InfoResponse:
+    properties:
+      members:
+        description: multisig members
+        items:
+          type: string
+        type: array
+      oauth_client_id:
+        description: oauth client id
+        format: uuid
+        type: string
+      public_key:
+        type: string
+      threshold:
+        description: multisig threshold
+        type: integer
+    type: object
+  system.TimeResponse:
+    properties:
+      epoch:
+        type: integer
+      iso:
+        type: string
+    type: object
+  user.LoginRequest:
+    properties:
+      code:
+        description: mixin oauth code
+        type: string
+    type: object
+  user.LoginResponse:
+    properties:
+      avatar:
+        description: user avatar
+        type: string
+      id:
+        description: user mixin id
+        format: uuid
+        type: string
+      language:
+        description: Preferred language
+        type: string
+      name:
+        description: user name
+        type: string
+      scope:
+        description: mixin oauth scope
+        type: string
+      token:
+        description: mixin oauth token
         type: string
     type: object
 host: holder-api.fox.one
@@ -109,7 +204,27 @@ info:
   title: Holder API
   version: "1.0"
 paths:
-  /gems:
+  /actions:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: request payments
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/actions.CreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/actions.CreateResponse'
+      summary: request payment code
+      tags:
+      - actions
+  /info:
     get:
       consumes:
       - application/json
@@ -119,10 +234,58 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.Resp_ListGems'
-      summary: list all gems
+            $ref: '#/definitions/system.InfoResponse'
+      summary: Show system info
       tags:
-      - Gems
+      - system
+  /login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: request login
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/user.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.LoginResponse'
+      summary: login with mixin oauth code
+      tags:
+      - user
+  /pools:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Resp_ListPools'
+      summary: list all pools
+      tags:
+      - Pools
+  /time:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/system.TimeResponse'
+      summary: Show server time
+      tags:
+      - system
   /transactions:
     get:
       consumes:
@@ -183,14 +346,14 @@ paths:
       summary: List Vaults
       tags:
       - Vaults
-  /vaults/{vault_id}:
+  /vaults/{id}:
     get:
       consumes:
       - application/json
       parameters:
       - description: vault id
         in: path
-        name: vault_id
+        name: id
         required: true
         type: string
       produces:

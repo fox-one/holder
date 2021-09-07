@@ -5,8 +5,8 @@ ActionSysProperty: 设置参数
 ActionProposalMake: 发起投票
 ActionProposalShout: 呼吁投票
 ActionProposalVote: 投票
-ActionGemDonate: 捐赠
-ActionGemGain: 提取收益
+ActionPoolDonate: 捐赠
+ActionPoolGain: 提取收益
 ActionVaultLock: 锁仓
 ActionVaultRelease: 赎回
 

@@ -18,7 +18,7 @@ import (
 func New(
 	sessions core.Session,
 	userz core.UserService,
-	gems core.GemStore,
+	pools core.PoolStore,
 	vaults core.VaultStore,
 	transactions core.TransactionStore,
 	walletz core.WalletService,
@@ -28,7 +28,7 @@ func New(
 	return &Server{
 		sessions:     sessions,
 		userz:        userz,
-		gems:         gems,
+		pools:        pools,
 		vaults:       vaults,
 		transactions: transactions,
 		walletz:      walletz,
@@ -40,7 +40,7 @@ func New(
 type Server struct {
 	sessions     core.Session
 	userz        core.UserService
-	gems         core.GemStore
+	pools        core.PoolStore
 	vaults       core.VaultStore
 	transactions core.TransactionStore
 	walletz      core.WalletService
@@ -62,11 +62,11 @@ func (s *Server) Handler() http.Handler {
 
 	r.Post("/login", user.HandleOauth(s.userz, s.sessions, s.notifier))
 
-	svr := rpc.New(s.gems, s.vaults, s.transactions).TwirpServer()
+	svr := rpc.New(s.pools, s.vaults, s.transactions).TwirpServer()
 	rt := reversetwirp.NewSingleTwirpServerProxy(svr)
 
-	r.Route("/gems", func(r chi.Router) {
-		r.Get("/", rt.Handle("ListGems"))
+	r.Route("/pools", func(r chi.Router) {
+		r.Get("/", rt.Handle("ListPools"))
 	})
 
 	r.Route("/vaults", func(r chi.Router) {

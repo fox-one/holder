@@ -17,19 +17,19 @@ import (
 )
 
 func New(
-	gems core.GemStore,
+	pools core.PoolStore,
 	vaults core.VaultStore,
 	transactions core.TransactionStore,
 ) *Server {
 	return &Server{
-		gems:         gems,
+		pools:        pools,
 		vaults:       vaults,
 		transactions: transactions,
 	}
 }
 
 type Server struct {
-	gems         core.GemStore
+	pools        core.PoolStore
 	vaults       core.VaultStore
 	transactions core.TransactionStore
 }
@@ -123,24 +123,24 @@ func (s *Server) ListTransactions(ctx context.Context, req *api.Req_ListTransact
 	return resp, nil
 }
 
-// ListGems godoc
-// @Summary list all gems
+// ListPools godoc
+// @Summary list all pools
 // @Description
-// @Tags Gems
+// @Tags Pools
 // @Accept json
 // @Produce json
-// @Success 200 {object} api.Resp_ListGems
-// @Router /gems [get]
-func (s *Server) ListGems(ctx context.Context, _ *api.Req_ListGems) (*api.Resp_ListGems, error) {
-	gems, err := s.gems.List(ctx)
+// @Success 200 {object} api.Resp_ListPools
+// @Router /pools [get]
+func (s *Server) ListPools(ctx context.Context, _ *api.Req_ListPools) (*api.Resp_ListPools, error) {
+	pools, err := s.pools.List(ctx)
 	if err != nil {
-		logger.FromContext(ctx).WithError(err).Errorln("rpc: gems.List")
+		logger.FromContext(ctx).WithError(err).Errorln("rpc: pools.List")
 		return nil, err
 	}
 
-	resp := &api.Resp_ListGems{Gems: make([]*api.Gem, 0, len(gems))}
-	for _, gem := range gems {
-		resp.Gems = append(resp.Gems, views.Gem(gem))
+	resp := &api.Resp_ListPools{Pools: make([]*api.Pool, 0, len(pools))}
+	for _, pool := range pools {
+		resp.Pools = append(resp.Pools, views.Pool(pool))
 	}
 
 	return resp, nil
@@ -162,13 +162,13 @@ func (s *Server) FindVault(ctx context.Context, req *api.Req_FindVault) (*api.Va
 		return nil, err
 	}
 
-	gem, err := s.gems.Find(ctx, vault.AssetID)
+	pool, err := s.pools.Find(ctx, vault.AssetID)
 	if err != nil {
-		logger.FromContext(ctx).WithError(err).Errorln("rpc: gems.Find")
+		logger.FromContext(ctx).WithError(err).Errorln("rpc: pools.Find")
 		return nil, err
 	}
 
-	return views.Vault(vault, gem), nil
+	return views.Vault(vault, pool), nil
 }
 
 // ListVaults godoc
@@ -200,24 +200,24 @@ func (s *Server) ListVaults(ctx context.Context, _ *api.Req_ListVaults) (*api.Re
 		return resp, nil
 	}
 
-	gems, err := s.gems.List(ctx)
+	pools, err := s.pools.List(ctx)
 	if err != nil {
-		logger.FromContext(ctx).WithError(err).Errorln("gems.List")
+		logger.FromContext(ctx).WithError(err).Errorln("pools.List")
 		return nil, err
 	}
 
-	gemMap := toGemMap(gems)
+	poolMap := toPoolMap(pools)
 	for _, vault := range vaults {
-		resp.Vaults = append(resp.Vaults, views.Vault(vault, gemMap[vault.AssetID]))
+		resp.Vaults = append(resp.Vaults, views.Vault(vault, poolMap[vault.AssetID]))
 	}
 
 	return resp, nil
 }
 
-func toGemMap(gems []*core.Gem) map[string]*core.Gem {
-	m := make(map[string]*core.Gem, len(gems))
-	for _, gem := range gems {
-		m[gem.ID] = gem
+func toPoolMap(pools []*core.Pool) map[string]*core.Pool {
+	m := make(map[string]*core.Pool, len(pools))
+	for _, pool := range pools {
+		m[pool.ID] = pool
 	}
 
 	return m

@@ -1,4 +1,4 @@
-package gem
+package pool
 
 import (
 	"sort"
@@ -11,7 +11,7 @@ import (
 )
 
 func HandleGain(
-	gems core.GemStore,
+	pools core.PoolStore,
 	wallets core.WalletStore,
 	system *core.System,
 ) cont.HandlerFunc {
@@ -23,17 +23,17 @@ func HandleGain(
 			return err
 		}
 
-		gem, err := From(r, gems)
+		pool, err := From(r, pools)
 		if err != nil {
 			return err
 		}
 
-		if gem.Version >= r.Version {
+		if pool.Version >= r.Version {
 			return nil
 		}
 
 		n := decimal.NewFromInt(int64(len(system.Members)))
-		avg := gem.Profit.Div(n).Truncate(8)
+		avg := pool.Profit.Div(n).Truncate(8)
 		if err := require(avg.IsPositive(), "insufficient-profit"); err != nil {
 			return err
 		}
@@ -48,14 +48,14 @@ func HandleGain(
 		for _, member := range copyAndSortMembers(system) {
 			t := &core.Transfer{
 				TraceID:   uuid.Modify(traceID, member),
-				AssetID:   gem.ID,
+				AssetID:   pool.ID,
 				Amount:    avg,
 				Memo:      memo,
 				Threshold: 1,
 				Opponents: []string{memo},
 			}
 
-			gem.Profit = gem.Profit.Sub(avg)
+			pool.Profit = pool.Profit.Sub(avg)
 			transfers = append(transfers, t)
 		}
 
@@ -64,8 +64,8 @@ func HandleGain(
 			return err
 		}
 
-		if err := gems.Save(ctx, gem, r.Version); err != nil {
-			log.WithError(err).Errorln("gems.Save")
+		if err := pools.Save(ctx, pool, r.Version); err != nil {
+			log.WithError(err).Errorln("pools.Save")
 			return err
 		}
 

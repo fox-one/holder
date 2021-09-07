@@ -12,7 +12,7 @@ import (
 )
 
 func HandleRelease(
-	gems core.GemStore,
+	pools core.PoolStore,
 	vaults core.VaultStore,
 	wallets core.WalletStore,
 	properties property.Store,
@@ -26,14 +26,14 @@ func HandleRelease(
 			return err
 		}
 
-		gem, err := gems.Find(ctx, vault.AssetID)
+		pool, err := pools.Find(ctx, vault.AssetID)
 		if err != nil {
-			log.WithError(err).Errorln("gems.Find")
+			log.WithError(err).Errorln("pools.Find")
 			return err
 		}
 
 		if vault.Version < r.Version {
-			if err := unlock(r, gem, vault); err != nil {
+			if err := unlock(r, pool, vault); err != nil {
 				return err
 			}
 
@@ -62,14 +62,16 @@ func HandleRelease(
 			}
 		}
 
-		if gem.Version < r.Version {
-			gem.Liquidity = gem.Liquidity.Sub(vault.Liquidity)
-			gem.Amount = gem.Amount.Sub(vault.Amount).Sub(vault.Reward)
-			gem.Reward = gem.Reward.Sub(vault.Reward)
+		if pool.Version < r.Version {
+			pool.Liquidity = pool.Liquidity.Sub(vault.Liquidity)
+			pool.Share = pool.Share.Sub(vault.Share()).Sub(vault.Reward)
+			pool.Amount = pool.Amount.Sub(vault.Amount).Sub(vault.Reward)
+			pool.Reward = pool.Reward.Sub(vault.Reward)
 
 			if vault.Penalty.IsPositive() {
-				gem.Amount = gem.Amount.Add(vault.Penalty)
-				gem.Reward = gem.Reward.Add(vault.Penalty)
+				pool.Amount = pool.Amount.Add(vault.Penalty)
+				pool.Share = pool.Share.Add(vault.Penalty)
+				pool.Reward = pool.Reward.Add(vault.Penalty)
 
 				v, err := properties.Get(ctx, sys.SystemProfitRateKey)
 				if err != nil {
@@ -80,14 +82,15 @@ func HandleRelease(
 				rate := number.Decimal(v.String())
 				profit := vault.Penalty.Mul(rate).Truncate(8)
 				if profit.IsPositive() && profit.LessThanOrEqual(vault.Penalty) {
-					gem.Amount = gem.Amount.Sub(profit)
-					gem.Reward = gem.Reward.Sub(profit)
-					gem.Profit = gem.Profit.Add(profit)
+					pool.Amount = pool.Amount.Sub(profit)
+					pool.Share = pool.Share.Sub(profit)
+					pool.Reward = pool.Reward.Sub(profit)
+					pool.Profit = pool.Profit.Add(profit)
 				}
 			}
 
-			if err := gems.Save(ctx, gem, r.Version); err != nil {
-				log.WithError(err).Errorln("gems.Save")
+			if err := pools.Save(ctx, pool, r.Version); err != nil {
+				log.WithError(err).Errorln("pools.Save")
 				return err
 			}
 		}
@@ -96,7 +99,7 @@ func HandleRelease(
 	}
 }
 
-func unlock(r *cont.Request, gem *core.Gem, vault *core.Vault) error {
+func unlock(r *cont.Request, pool *core.Pool, vault *core.Vault) error {
 	if err := require(r.Sender == vault.UserID, "not-allowed"); err != nil {
 		return err
 	}
@@ -110,7 +113,7 @@ func unlock(r *cont.Request, gem *core.Gem, vault *core.Vault) error {
 		return err
 	}
 
-	vault.Reward = GetReward(gem, vault)
+	vault.Reward = GetReward(pool, vault)
 	if remain := vault.Duration - dur; remain > 0 {
 		d1 := decimal.NewFromInt(remain)
 		d2 := decimal.NewFromInt(vault.Duration)

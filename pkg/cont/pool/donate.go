@@ -1,4 +1,4 @@
-package gem
+package pool
 
 import (
 	"github.com/fox-one/holder/core"
@@ -10,23 +10,24 @@ import (
 	"github.com/fox-one/pkg/property"
 )
 
-func HandleDonate(gems core.GemStore, properties property.Store) cont.HandlerFunc {
+func HandleDonate(pools core.PoolStore, properties property.Store) cont.HandlerFunc {
 	return func(r *cont.Request) error {
 		ctx := r.Context()
 		log := logger.FromContext(ctx)
 
-		gem, err := From(r.WithBody(types.UUID(r.AssetID)), gems)
+		pool, err := From(r.WithBody(types.UUID(r.AssetID)), pools)
 		if err != nil {
 			return err
 		}
 
-		if err := require(gem.Liquidity.IsPositive(), "empty"); err != nil {
+		if err := require(pool.Liquidity.IsPositive(), "empty"); err != nil {
 			return cont.WithFlag(err, cont.FlagRefund)
 		}
 
-		if gem.Version < r.Version {
-			gem.Amount = gem.Amount.Add(r.Amount)
-			gem.Reward = gem.Reward.Add(r.Amount)
+		if pool.Version < r.Version {
+			pool.Amount = pool.Amount.Add(r.Amount)
+			pool.Reward = pool.Reward.Add(r.Amount)
+			pool.Share = pool.Share.Add(r.Amount)
 
 			v, err := properties.Get(ctx, sys.SystemDonateFeeRate)
 			if err != nil {
@@ -36,13 +37,14 @@ func HandleDonate(gems core.GemStore, properties property.Store) cont.HandlerFun
 
 			rate := number.Decimal(v.String())
 			if fee := r.Amount.Mul(rate).Truncate(8); fee.IsPositive() && fee.LessThanOrEqual(r.Amount) {
-				gem.Amount = gem.Amount.Sub(fee)
-				gem.Reward = gem.Reward.Sub(fee)
-				gem.Profit = gem.Profit.Add(fee)
+				pool.Amount = pool.Amount.Sub(fee)
+				pool.Reward = pool.Reward.Sub(fee)
+				pool.Share = pool.Share.Sub(fee)
+				pool.Profit = pool.Profit.Add(fee)
 			}
 
-			if err := gems.Save(ctx, gem, r.Version); err != nil {
-				log.WithError(err).Errorln("gems.Save")
+			if err := pools.Save(ctx, pool, r.Version); err != nil {
+				log.WithError(err).Errorln("pools.Save")
 				return err
 			}
 		}
