@@ -30,6 +30,7 @@ type (
 		Duration    int64           `json:"duration,omitempty"`
 		MinDuration int64           `json:"min_duration,omitempty"`
 		Amount      decimal.Decimal `sql:"type:decimal(64,8)" json:"amount,omitempty"`
+		Share       decimal.Decimal `sql:"type:decimal(64,12)" json:"share,omitempty"`
 		Liquidity   decimal.Decimal `sql:"type:decimal(64,12)" json:"liquidity,omitempty"`
 		Reward      decimal.Decimal `sql:"type:decimal(64,8)" json:"reward,omitempty"`
 		Penalty     decimal.Decimal `sql:"type:decimal(64,8)" json:"penalty,omitempty"`
@@ -47,10 +48,4 @@ type (
 func (vault *Vault) EndAt() time.Time {
 	dur := time.Duration(vault.Duration) * time.Second
 	return vault.CreatedAt.Add(dur)
-}
-
-func (vault *Vault) Share() decimal.Decimal {
-	const secondsOfYear int64 = 365 * 24 * 60 * 60
-	dur := decimal.NewFromInt(vault.Duration).Div(decimal.NewFromInt(secondsOfYear))
-	return vault.Amount.Mul(dur).Truncate(12)
 }

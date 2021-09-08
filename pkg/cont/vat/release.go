@@ -64,13 +64,12 @@ func HandleRelease(
 
 		if pool.Version < r.Version {
 			pool.Liquidity = pool.Liquidity.Sub(vault.Liquidity)
-			pool.Share = pool.Share.Sub(vault.Share()).Sub(vault.Reward)
+			pool.Share = pool.Share.Sub(vault.Share)
 			pool.Amount = pool.Amount.Sub(vault.Amount).Sub(vault.Reward)
 			pool.Reward = pool.Reward.Sub(vault.Reward)
 
 			if vault.Penalty.IsPositive() {
 				pool.Amount = pool.Amount.Add(vault.Penalty)
-				pool.Share = pool.Share.Add(vault.Penalty)
 				pool.Reward = pool.Reward.Add(vault.Penalty)
 
 				v, err := properties.Get(ctx, sys.SystemProfitRateKey)
@@ -83,7 +82,6 @@ func HandleRelease(
 				profit := vault.Penalty.Mul(rate).Truncate(8)
 				if profit.IsPositive() && profit.LessThanOrEqual(vault.Penalty) {
 					pool.Amount = pool.Amount.Sub(profit)
-					pool.Share = pool.Share.Sub(profit)
 					pool.Reward = pool.Reward.Sub(profit)
 					pool.Profit = pool.Profit.Add(profit)
 				}

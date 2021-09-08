@@ -1,6 +1,8 @@
 package vat
 
 import (
+	"time"
+
 	"github.com/fox-one/holder/core"
 	"github.com/fox-one/holder/pkg/cont"
 	"github.com/fox-one/holder/pkg/uuid"
@@ -35,16 +37,23 @@ func From(r *cont.Request, vaults core.VaultStore) (*core.Vault, error) {
 }
 
 func GetReward(pool *core.Pool, vault *core.Vault) decimal.Decimal {
-	share := pool.Share
+	share := pool.Share.Add(pool.Reward)
 	if vault.Liquidity.LessThan(pool.Liquidity) {
 		share = vault.Liquidity.Div(pool.Liquidity).Mul(share).Truncate(12)
 	}
 
 	return decimal.Min(
 		decimal.Max(
-			share.Sub(vault.Share()).Truncate(8),
+			share.Sub(vault.Share).Truncate(8),
 			decimal.Zero,
 		),
 		pool.Reward,
 	)
+}
+
+func GetShare(amount decimal.Decimal, dur int64) decimal.Decimal {
+	year := time.Hour * 24 * 365
+	secondsOfYear := year.Milliseconds() / 1000
+	d := decimal.NewFromInt(dur).Div(decimal.NewFromInt(secondsOfYear))
+	return amount.Mul(d).Truncate(12)
 }

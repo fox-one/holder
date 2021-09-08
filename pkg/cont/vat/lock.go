@@ -44,13 +44,13 @@ func HandleLock(
 			Duration:    dur,
 			MinDuration: minDur,
 			Amount:      r.Amount,
+			Share:       GetShare(r.Amount, dur),
 		}
 
-		share := vault.Share()
 		if pool.Liquidity.IsPositive() {
-			vault.Liquidity = share.Div(pool.Share).Mul(pool.Liquidity).Truncate(12)
+			vault.Liquidity = vault.Share.Div(pool.Share.Add(pool.Reward)).Mul(pool.Liquidity).Truncate(12)
 		} else {
-			vault.Liquidity = share
+			vault.Liquidity = vault.Share
 		}
 
 		if err := require(vault.Liquidity.IsPositive(), "insufficient-liquidity"); err != nil {
@@ -64,7 +64,7 @@ func HandleLock(
 
 		if pool.Version < r.Version {
 			pool.Amount = pool.Amount.Add(vault.Amount)
-			pool.Share = pool.Share.Add(share)
+			pool.Share = pool.Share.Add(vault.Share)
 			pool.Liquidity = pool.Liquidity.Add(vault.Liquidity)
 
 			if err := pools.Save(ctx, pool, r.Version); err != nil {

@@ -15,6 +15,7 @@ require (
 	github.com/fox-one/pkg v1.5.5
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/gofrs/uuid v4.0.0+incompatible
+	github.com/golang/mock v1.3.1 // indirect
 	github.com/golang/protobuf v1.5.2
 	github.com/google/wire v0.5.0
 	github.com/gorilla/schema v1.2.0
