@@ -77,6 +77,8 @@ message Vault {
     string reward = 12;
     string penalty = 13;
     Pool pool = 14;
+    string locked_price = 15;
+    string released_price = 16;
 }
 
 message Req {

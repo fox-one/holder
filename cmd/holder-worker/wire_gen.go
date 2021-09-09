@@ -31,7 +31,7 @@ import (
 	"github.com/fox-one/holder/worker/spentsync"
 	"github.com/fox-one/holder/worker/syncer"
 	"github.com/fox-one/holder/worker/txsender"
-	propertystore "github.com/fox-one/pkg/store/property"
+	"github.com/fox-one/pkg/store/property"
 )
 
 // Injectors from wire.go:
@@ -63,7 +63,7 @@ func buildApp(cfg *config.Config) (app, error) {
 	userService := user.New(client, userConfig)
 	assetService := asset.New(client)
 	coreParliament := parliament.New(messageStore, userService, assetService, walletService, system)
-	payeePayee := payee.New(walletStore, walletService, transactionStore, proposalStore, store, poolStore, vaultStore, coreParliament, system)
+	payeePayee := payee.New(walletStore, walletService, transactionStore, proposalStore, store, poolStore, vaultStore, coreParliament, assetService, system)
 	userStore := user2.New(db)
 	localizer, err := provideLocalizer(cfg)
 	if err != nil {

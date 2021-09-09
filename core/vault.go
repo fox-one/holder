@@ -18,22 +18,24 @@ const (
 
 type (
 	Vault struct {
-		ID          int64           `sql:"primary_key" json:"id,omitempty"`
-		CreatedAt   time.Time       `json:"created_at,omitempty"`
-		UpdatedAt   time.Time       `json:"updated_at,omitempty"`
-		ReleasedAt  time.Time       `json:"released_at,omitempty"`
-		Version     int64           `json:"version,omitempty"`
-		TraceID     string          `sql:"size:36" json:"trace_id,omitempty"`
-		UserID      string          `sql:"size:36" json:"user_id,omitempty"`
-		Status      VaultStatus     `json:"status,omitempty"`
-		AssetID     string          `sql:"size:36" json:"asset_id,omitempty"`
-		Duration    int64           `json:"duration,omitempty"`
-		MinDuration int64           `json:"min_duration,omitempty"`
-		Amount      decimal.Decimal `sql:"type:decimal(64,8)" json:"amount,omitempty"`
-		Share       decimal.Decimal `sql:"type:decimal(64,12)" json:"share,omitempty"`
-		Liquidity   decimal.Decimal `sql:"type:decimal(64,12)" json:"liquidity,omitempty"`
-		Reward      decimal.Decimal `sql:"type:decimal(64,8)" json:"reward,omitempty"`
-		Penalty     decimal.Decimal `sql:"type:decimal(64,8)" json:"penalty,omitempty"`
+		ID            int64           `sql:"primary_key" json:"id,omitempty"`
+		CreatedAt     time.Time       `json:"created_at,omitempty"`
+		UpdatedAt     time.Time       `json:"updated_at,omitempty"`
+		ReleasedAt    time.Time       `json:"released_at,omitempty"`
+		Version       int64           `json:"version,omitempty"`
+		TraceID       string          `sql:"size:36" json:"trace_id,omitempty"`
+		UserID        string          `sql:"size:36" json:"user_id,omitempty"`
+		Status        VaultStatus     `json:"status,omitempty"`
+		AssetID       string          `sql:"size:36" json:"asset_id,omitempty"`
+		Duration      int64           `json:"duration,omitempty"`
+		MinDuration   int64           `json:"min_duration,omitempty"`
+		Amount        decimal.Decimal `sql:"type:decimal(64,8)" json:"amount,omitempty"`
+		Share         decimal.Decimal `sql:"type:decimal(64,12)" json:"share,omitempty"`
+		Liquidity     decimal.Decimal `sql:"type:decimal(64,12)" json:"liquidity,omitempty"`
+		Reward        decimal.Decimal `sql:"type:decimal(64,8)" json:"reward,omitempty"`
+		Penalty       decimal.Decimal `sql:"type:decimal(64,8)" json:"penalty,omitempty"`
+		LockedPrice   decimal.Decimal `sql:"type:decimal(24,8)" json:"locked_price,omitempty"`
+		ReleasedPrice decimal.Decimal `sql:"type:decimal(24,8)" json:"released_price,omitempty"`
 	}
 
 	VaultStore interface {

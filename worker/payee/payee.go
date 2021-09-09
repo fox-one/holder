@@ -33,6 +33,7 @@ func New(
 	pools core.PoolStore,
 	vaults core.VaultStore,
 	parliaments core.Parliament,
+	assetz core.AssetService,
 	system *core.System,
 ) *Payee {
 	wallets = wallet.BindTransferVersion(wallets)
@@ -49,7 +50,7 @@ func New(
 		core.ActionPoolDonate: pool.HandleDonate(pools, properties),
 		core.ActionPoolGain:   pool.HandleGain(pools, wallets, system),
 		// vat
-		core.ActionVaultLock:    vat.HandleLock(pools, vaults),
+		core.ActionVaultLock:    vat.HandleLock(pools, vaults, assetz),
 		core.ActionVaultRelease: vat.HandleRelease(pools, vaults, wallets, properties),
 	}
 

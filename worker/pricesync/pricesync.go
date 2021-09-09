@@ -56,7 +56,7 @@ func (w *Syncer) run(ctx context.Context) error {
 			continue
 		}
 
-		pool.Name = asset.Name
+		pool.Name = asset.Symbol
 		pool.Logo = asset.Logo
 		pool.Price = asset.Price
 

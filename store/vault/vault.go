@@ -45,11 +45,12 @@ func (s *vaultStore) Update(_ context.Context, vault *core.Vault, version int64)
 	}
 
 	updates := map[string]interface{}{
-		"released_at": vault.ReleasedAt,
-		"status":      vault.Status,
-		"reward":      vault.Reward,
-		"penalty":     vault.Penalty,
-		"version":     version,
+		"released_at":    vault.ReleasedAt,
+		"status":         vault.Status,
+		"reward":         vault.Reward,
+		"penalty":        vault.Penalty,
+		"released_price": vault.ReleasedPrice,
+		"version":        version,
 	}
 
 	tx := s.db.Update().Model(vault).Where("version = ?", vault.Version).Updates(updates)

@@ -9,6 +9,7 @@ import (
 func HandleLock(
 	pools core.PoolStore,
 	vaults core.VaultStore,
+	assetz core.AssetService,
 ) cont.HandlerFunc {
 	return func(r *cont.Request) error {
 		ctx := r.Context()
@@ -33,6 +34,18 @@ func HandleLock(
 			return err
 		}
 
+		if pool.Version == 0 {
+			asset, err := assetz.Find(ctx, r.AssetID)
+			if err != nil {
+				log.WithError(err).Errorln("assetz.Find")
+				return err
+			}
+
+			pool.Price = asset.Price
+			pool.Name = asset.Symbol
+			pool.Logo = asset.Logo
+		}
+
 		vault := &core.Vault{
 			CreatedAt:   r.Now,
 			UpdatedAt:   r.Now,
@@ -45,6 +58,7 @@ func HandleLock(
 			MinDuration: minDur,
 			Amount:      r.Amount,
 			Share:       GetShare(r.Amount, dur),
+			LockedPrice: pool.Price,
 		}
 
 		if pool.Liquidity.IsPositive() {

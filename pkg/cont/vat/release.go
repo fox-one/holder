@@ -122,5 +122,6 @@ func unlock(r *cont.Request, pool *core.Pool, vault *core.Vault) error {
 
 	vault.Status = core.VaultStatusReleased
 	vault.ReleasedAt = r.Now
+	vault.ReleasedPrice = pool.Price
 	return nil
 }
