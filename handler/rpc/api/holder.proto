@@ -64,17 +64,19 @@ message Vault {
     string id = 1;
     // @inject_tag: swaggertype:"string" format:"date"
     google.protobuf.Timestamp created_at = 2;
-    string user_id = 3;
-    Status status = 4;
-    string asset_id = 5;
-    int64  duration = 6;
-    int64  min_duration = 7;
-    string amount = 8;
-    string share = 9;
-    string liquidity = 10;
-    string reward = 11;
-    string penalty = 12;
-    Pool pool = 13;
+    // @inject_tag: swaggertype:"string" format:"date"
+    google.protobuf.Timestamp released_at = 3;
+    string user_id = 4;
+    Status status = 5;
+    string asset_id = 6;
+    int64  duration = 7;
+    int64  min_duration = 8;
+    string amount = 9;
+    string share = 10;
+    string liquidity = 11;
+    string reward = 12;
+    string penalty = 13;
+    Pool pool = 14;
 }
 
 message Req {
