@@ -11,6 +11,9 @@ import (
 
 	"github.com/fox-one/holder/core"
 	"github.com/fox-one/holder/notifier/compose"
+	"github.com/fox-one/holder/pkg/cont/vat"
+	"github.com/fox-one/holder/pkg/mtg"
+	"github.com/fox-one/holder/pkg/mtg/types"
 	"github.com/fox-one/holder/pkg/uuid"
 	"github.com/fox-one/holder/service/asset"
 	"github.com/fox-one/mixin-sdk-go"
@@ -30,6 +33,7 @@ func New(
 	pools core.PoolStore,
 	vats core.VaultStore,
 	users core.UserStore,
+	walletz core.WalletService,
 	i18n *localizer.Localizer,
 	cfg Config,
 ) core.Notifier {
@@ -51,6 +55,7 @@ func New(
 		pools:    pools,
 		vats:     vats,
 		users:    users,
+		walletz:  walletz,
 		i18n:     i18n,
 		links:    links,
 	}
@@ -63,6 +68,7 @@ type notifier struct {
 	pools    core.PoolStore
 	vats     core.VaultStore
 	users    core.UserStore
+	walletz  core.WalletService
 	i18n     *localizer.Localizer
 	links    *template.Template
 }
@@ -74,6 +80,32 @@ func (n *notifier) executeLink(name string, data interface{}) (string, error) {
 	}
 
 	return b.String(), nil
+}
+
+func (n *notifier) buildPaymentURL(ctx context.Context, traceID string, args ...interface{}) (string, error) {
+	data, err := mtg.Encode(args...)
+	if err != nil {
+		return "", err
+	}
+
+	data, _ = core.TransactionAction{Body: data}.Encode()
+	memo := base64.StdEncoding.EncodeToString(data)
+
+	transfer := &core.Transfer{
+		TraceID:   traceID,
+		AssetID:   n.system.GasAssetID,
+		Amount:    n.system.GasAmount,
+		Memo:      memo,
+		Threshold: n.system.Threshold,
+		Opponents: n.system.Members,
+	}
+
+	code, err := n.walletz.ReqTransfer(ctx, transfer)
+	if err != nil {
+		return "", err
+	}
+
+	return mixin.URL.Codes(code), nil
 }
 
 func (n *notifier) localize(id, lang string, args ...interface{}) string {
@@ -162,6 +194,33 @@ func (n *notifier) Snapshot(ctx context.Context, transfer *core.Transfer, signed
 	}
 
 	return n.messages.Create(ctx, []*core.Message{core.BuildMessage(req)})
+}
+
+func (n *notifier) LockDone(ctx context.Context, pool *core.Pool, vault *core.Vault) error {
+	b := compose.New(n.system, n.i18n, n.users)
+
+	args := map[string]interface{}{
+		"TraceID":   vault.TraceID,
+		"Amount":    vault.Amount.String(),
+		"Symbol":    n.fetchAssetSymbol(ctx, vault.AssetID),
+		"CreatedAt": vault.CreatedAt.Format(time.RFC3339),
+		"ExpiredAt": vault.EndAt().Format(time.RFC3339),
+	}
+
+	if reward := vat.GetReward(pool, vault); reward.IsPositive() {
+		args["Reward"] = reward.String()
+	}
+
+	traceID := uuid.Modify(vault.TraceID, "lock_done_notify")
+	w := b.Write(traceID, vault.UserID)
+	w.Text(w.Localize("lock_done", args))
+
+	if action, err := n.buildPaymentURL(ctx, traceID, core.ActionVaultRelease, types.UUID(vault.TraceID)); err == nil {
+		w.Button(w.Localize("withdraw_button"), action)
+	}
+
+	messages := b.Messages()
+	return n.messages.Create(ctx, messages)
 }
 
 func (n *notifier) Transaction(ctx context.Context, tx *core.Transaction) error {

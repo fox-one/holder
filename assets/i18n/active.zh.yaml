@@ -50,10 +50,24 @@ vault_released: |
   - 到期时间：{{.ExpiredAt}}（ UTC 时间 ）
   - 赎回时间：{{.ReleasedAt}}（ UTC 时间 ）
 
+lock_done: |
+  ⏰ 锁仓到期
+
+  - ID：{{.TraceID}}
+  - 锁仓金额：{{.Amount}} {{.Symbol}}
+  {{ if .Reward -}}
+  - 锁仓奖励：{{.Reward}} {{.Symbol}}
+  {{ end -}}
+  - 锁仓时间：{{.CreatedAt}}（ UTC 时间 ）
+  - 到期时间：{{.ExpiredAt}}（ UTC 时间 ）
+
+withdraw_button: 取回
+
 donated: |
-  ✅ 捐赠成功
+  ✅ 打赏成功
 
-  - 捐赠金额：{{.Amount}} {{.Symbol}}
-  - 捐赠日期：{{.DonateAt}}（ UTC 时间 ）
+  - 打赏金额：{{.Amount}} {{.Symbol}}
+  - 打赏日期：{{.DonateAt}}（ UTC 时间 ）
 
-  感谢捐赠！
+  感谢打赏！
+

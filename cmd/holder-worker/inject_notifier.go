@@ -24,6 +24,7 @@ func provideNotifier(
 	pools core.PoolStore,
 	vats core.VaultStore,
 	users core.UserStore,
+	walletz core.WalletService,
 	i18n *localizer.Localizer,
 	cfg notifier.Config,
 ) core.Notifier {
@@ -35,6 +36,7 @@ func provideNotifier(
 			pools,
 			vats,
 			users,
+			walletz,
 			i18n,
 			cfg,
 		)

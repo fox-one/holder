@@ -50,6 +50,19 @@ vault_released: |
   - End Time: {{.ExpiredAt}} (UTC)
   - Unlock Time: {{.ReleasedAt}} (UTC)
 
+lock_done: |
+  ⏰ Lock-up expiration
+
+  - ID: {{.TraceID}}
+  - Locked Amount: {{.Amount}} {{.Symbol}}
+  {{ if .Reward -}}
+  - Reward: {{.Reward}} {{.Symbol}}
+  {{ end -}}
+  - Starting time: {{.CreatedAt}} (UTC)
+  - End Time: {{.ExpiredAt}} (UTC)
+
+withdraw_button: Withdraw
+
 donated: |
   ✅ Donate successfully
 

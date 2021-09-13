@@ -23,3 +23,7 @@ func (d *dumb) Transaction(ctx context.Context, tx *core.Transaction) error {
 func (d *dumb) Snapshot(ctx context.Context, transfer *core.Transfer, TxHash string) error {
 	return nil
 }
+
+func (d *dumb) LockDone(ctx context.Context, pool *core.Pool, vault *core.Vault) error {
+	return nil
+}

@@ -51,7 +51,7 @@ func buildServer(cfg *config.Config) (*server.Server, error) {
 		return nil, err
 	}
 	notifierConfig := _wireConfigValue
-	coreNotifier := notifier.New(system, assetService, messageStore, poolStore, vaultStore, userStore, localizer, notifierConfig)
+	coreNotifier := notifier.New(system, assetService, messageStore, poolStore, vaultStore, userStore, walletService, localizer, notifierConfig)
 	apiServer := api.New(coreSession, userService, poolStore, vaultStore, transactionStore, walletService, coreNotifier, system)
 	rpcServer := rpc.New(poolStore, vaultStore, transactionStore)
 	mux := provideRoute(apiServer, rpcServer, coreSession)

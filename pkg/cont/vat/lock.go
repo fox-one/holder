@@ -1,6 +1,8 @@
 package vat
 
 import (
+	"time"
+
 	"github.com/fox-one/holder/core"
 	"github.com/fox-one/holder/pkg/cont"
 	"github.com/fox-one/pkg/logger"
@@ -49,6 +51,7 @@ func HandleLock(
 		vault := &core.Vault{
 			CreatedAt:   r.Now,
 			UpdatedAt:   r.Now,
+			ReleasedAt:  time.Unix(0, 0),
 			Version:     r.Version,
 			TraceID:     r.TraceID,
 			UserID:      r.Sender,

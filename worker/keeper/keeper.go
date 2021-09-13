@@ -2,32 +2,31 @@ package keeper
 
 import (
 	"context"
-	"encoding/base64"
 	"time"
 
 	"github.com/fox-one/holder/core"
-	"github.com/fox-one/holder/pkg/mtg"
-	"github.com/fox-one/holder/pkg/mtg/types"
-	"github.com/fox-one/holder/pkg/uuid"
+	"github.com/fox-one/holder/worker/keeper/pool"
 	"github.com/fox-one/pkg/logger"
 )
 
 func New(
+	pools core.PoolStore,
 	vaults core.VaultStore,
-	walletz core.WalletService,
-	system *core.System,
+	notifier core.Notifier,
 ) *Keeper {
 	return &Keeper{
-		vaults:  vaults,
-		walletz: walletz,
-		system:  system,
+		pools:    pools,
+		vaults:   vaults,
+		notifier: notifier,
+		filter:   make(map[int64]struct{}),
 	}
 }
 
 type Keeper struct {
-	vaults  core.VaultStore
-	walletz core.WalletService
-	system  *core.System
+	pools    core.PoolStore
+	vaults   core.VaultStore
+	notifier core.Notifier
+	filter   map[int64]struct{}
 }
 
 func (w *Keeper) Run(ctx context.Context) error {
@@ -35,7 +34,7 @@ func (w *Keeper) Run(ctx context.Context) error {
 	ctx = logger.WithContext(ctx, log)
 
 	dur := time.Millisecond
-	interval := 5 * time.Minute
+	interval := 10 * time.Minute
 
 	for {
 		select {
@@ -52,35 +51,10 @@ func (w *Keeper) Run(ctx context.Context) error {
 }
 
 func (w *Keeper) run(ctx context.Context, t time.Time) error {
-	traceID := uuid.MD5(t.Format(time.RFC3339))
-
-	if err := w.ping(ctx, traceID); err != nil {
-		logger.FromContext(ctx).WithError(err).Errorln("ping")
-		return err
-	}
-
-	if err := w.handleExpiredVaults(ctx, traceID); err != nil {
-		logger.FromContext(ctx).WithError(err).Errorln("handleExpiredVaults")
-		return err
-	}
-
-	return nil
-}
-
-// ping 会发送一条转账到多签组，刷新 utxo 同步的 checkpoint
-func (w *Keeper) ping(ctx context.Context, traceID string) error {
-	return w.walletz.HandleTransfer(ctx, &core.Transfer{
-		TraceID:   uuid.Modify(traceID, "ping"),
-		AssetID:   w.system.GasAssetID,
-		Amount:    w.system.GasAmount,
-		Memo:      "ping",
-		Threshold: w.system.Threshold,
-		Opponents: w.system.Members,
-	})
-}
-
-func (w *Keeper) handleExpiredVaults(ctx context.Context, traceID string) error {
-	log := logger.FromContext(ctx)
+	var (
+		log   = logger.FromContext(ctx)
+		pools = pool.Cache(w.pools)
+	)
 
 	var fromID int64 = 0
 	const limit = 100
@@ -92,29 +66,33 @@ func (w *Keeper) handleExpiredVaults(ctx context.Context, traceID string) error 
 			return err
 		}
 
-		for _, v := range vaults {
-			fromID = v.ID
+		for _, vault := range vaults {
+			fromID = vault.ID
 
-			if v.Status != core.VaultStatusLocking {
+			if vault.Status == core.VaultStatusReleased {
 				continue
 			}
 
-			if time.Since(v.CreatedAt).Milliseconds()/1000 < v.Duration {
+			if t.Sub(vault.CreatedAt).Milliseconds()/1000 < vault.Duration {
 				continue
 			}
 
-			memo := buildMemo(core.ActionVaultRelease, types.UUID(v.TraceID))
-			if err := w.walletz.HandleTransfer(ctx, &core.Transfer{
-				TraceID:   uuid.Modify(traceID, v.TraceID),
-				AssetID:   w.system.GasAssetID,
-				Amount:    w.system.GasAmount,
-				Threshold: w.system.Threshold,
-				Opponents: w.system.Members,
-				Memo:      memo,
-			}); err != nil {
-				log.WithError(err).Errorln("walletz.HandleTransfer")
+			if _, ok := w.filter[vault.ID]; ok {
+				continue
+			}
+
+			pool, err := pools.Find(ctx, vault.AssetID)
+			if err != nil {
+				log.WithError(err).Errorln("pools.Find")
 				return err
 			}
+
+			if err := w.notifier.LockDone(ctx, pool, vault); err != nil {
+				log.WithError(err).Errorln("notifier.LockDone")
+				return err
+			}
+
+			w.filter[vault.ID] = struct{}{}
 		}
 
 		if len(vaults) < limit {
@@ -123,22 +101,4 @@ func (w *Keeper) handleExpiredVaults(ctx context.Context, traceID string) error 
 	}
 
 	return nil
-}
-
-func buildMemo(values ...interface{}) string {
-	body, err := mtg.Encode(values...)
-	if err != nil {
-		panic(err)
-	}
-
-	action := core.TransactionAction{
-		Body: body,
-	}
-
-	data, err := action.Encode()
-	if err != nil {
-		panic(err)
-	}
-
-	return base64.StdEncoding.EncodeToString(data)
 }

@@ -70,7 +70,7 @@ func buildApp(cfg *config.Config) (app, error) {
 		return app{}, err
 	}
 	notifierConfig := provideNotifierConfig(cfg)
-	notifier := provideNotifier(system, assetService, messageStore, poolStore, vaultStore, userStore, localizer, notifierConfig)
+	notifier := provideNotifier(system, assetService, messageStore, poolStore, vaultStore, userStore, walletService, localizer, notifierConfig)
 	eventsEvents := events.New(transactionStore, notifier, store)
 	spentSync := spentsync.New(walletStore, notifier)
 	sender := txsender.New(walletStore)
@@ -78,7 +78,7 @@ func buildApp(cfg *config.Config) (app, error) {
 	assignerAssigner := assigner.New(walletStore, system)
 	datadogConfig := provideDataDogConfig(cfg)
 	datadogDatadog := datadog.New(walletStore, store, messageService, datadogConfig)
-	keeperKeeper := keeper.New(vaultStore, walletService, system)
+	keeperKeeper := keeper.New(poolStore, vaultStore, notifier)
 	pricesyncSyncer := pricesync.New(poolStore, assetService)
 	v := provideWorkers(cashierCashier, messengerMessenger, payeePayee, eventsEvents, spentSync, sender, syncerSyncer, assignerAssigner, datadogDatadog, keeperKeeper, pricesyncSyncer)
 	server := node.New(system, store)

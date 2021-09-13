@@ -12,4 +12,6 @@ type Notifier interface {
 	Transaction(ctx context.Context, tx *Transaction) error
 	// Snapshot called when a transfer confirmed by mixin main net
 	Snapshot(ctx context.Context, transfer *Transfer, TxHash string) error
+	// LockDone called when a vault finish the lock
+	LockDone(ctx context.Context, pool *Pool, vault *Vault) error
 }
