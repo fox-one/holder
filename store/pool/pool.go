@@ -50,6 +50,7 @@ func (s *poolStore) Save(_ context.Context, pool *core.Pool, version int64) erro
 		"amount":    pool.Amount,
 		"share":     pool.Share,
 		"reward":    pool.Reward,
+		"reward_at": pool.RewardAt,
 		"liquidity": pool.Liquidity,
 		"profit":    pool.Profit,
 		"version":   version,

@@ -37,6 +37,10 @@ func From(r *cont.Request, vaults core.VaultStore) (*core.Vault, error) {
 }
 
 func GetReward(pool *core.Pool, vault *core.Vault) decimal.Decimal {
+	if !pool.RewardAt.IsZero() && vault.CreatedAt.Sub(pool.RewardAt) >= 0 {
+		return decimal.Zero
+	}
+
 	share := pool.Share.Add(pool.Reward)
 	if vault.Liquidity.LessThan(pool.Liquidity) {
 		share = vault.Liquidity.Div(pool.Liquidity).Mul(share).Truncate(12)

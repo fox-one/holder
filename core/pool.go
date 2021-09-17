@@ -15,7 +15,10 @@ type (
 		Version   int64           `json:"version,omitempty"`
 		Amount    decimal.Decimal `sql:"type:decimal(64,8)" json:"amount,omitempty"`
 		Share     decimal.Decimal `sql:"type:decimal(64,12)" json:"share,omitempty"`
-		Reward    decimal.Decimal `sql:"type:decimal(64,8)" json:"reward,omitempty"`
+		// Reward represent the accumulated reward of the pool
+		Reward decimal.Decimal `sql:"type:decimal(64,8)" json:"reward,omitempty"`
+		// RewardAt represent the last reward time
+		RewardAt  time.Time       `json:"reward_at,omitempty"`
 		Liquidity decimal.Decimal `sql:"type:decimal(64,12)" json:"liquidity,omitempty"`
 		Profit    decimal.Decimal `sql:"type:decimal(64,8)" json:"profit,omitempty"`
 		// Pool info

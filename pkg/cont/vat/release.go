@@ -71,6 +71,7 @@ func HandleRelease(
 			if vault.Penalty.IsPositive() {
 				pool.Amount = pool.Amount.Add(vault.Penalty)
 				pool.Reward = pool.Reward.Add(vault.Penalty)
+				pool.RewardAt = r.Now
 
 				v, err := properties.Get(ctx, sys.SystemProfitRateKey)
 				if err != nil {

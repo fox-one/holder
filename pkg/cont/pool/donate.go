@@ -38,6 +38,7 @@ func HandleDonate(pools core.PoolStore, properties property.Store) cont.HandlerF
 			if fee := r.Amount.Mul(rate).Truncate(8); fee.IsPositive() && fee.LessThanOrEqual(r.Amount) {
 				pool.Amount = pool.Amount.Sub(fee)
 				pool.Reward = pool.Reward.Sub(fee)
+				pool.RewardAt = r.Now
 				pool.Profit = pool.Profit.Add(fee)
 			}
 
