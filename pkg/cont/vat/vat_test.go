@@ -41,7 +41,10 @@ func TestVault(t *testing.T) {
 			}
 		}).AnyTimes()
 
-	lockHandler := HandleLock(pools, vaults)
+	assetz := mock.NewMockAssetService(ctrl)
+	assetz.EXPECT().Find(gomock.Any(), gomock.Any()).Return(&core.Asset{}, nil).AnyTimes()
+
+	lockHandler := HandleLock(pools, vaults, assetz)
 	releaseHandler := HandleRelease(pools, vaults, wallets, properties)
 
 	assetID := newUUID()
