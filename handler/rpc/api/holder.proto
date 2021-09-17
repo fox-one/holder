@@ -54,6 +54,8 @@ message Pool {
     string liquidity = 7;
     string profit = 8;
     string price = 9;
+    // @inject_tag: swaggertype:"string" format:"date"
+    google.protobuf.Timestamp reward_at = 10;
 }
 
 message Vault {

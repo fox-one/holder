@@ -13,6 +13,7 @@ func Pool(pool *core.Pool) *api.Pool {
 		Amount:    pool.Amount.String(),
 		Share:     pool.Share.String(),
 		Reward:    pool.Reward.String(),
+		RewardAt:  Time(&pool.RewardAt),
 		Liquidity: pool.Liquidity.String(),
 		Profit:    pool.Profit.String(),
 		Price:     pool.Price.String(),
