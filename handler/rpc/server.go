@@ -168,6 +168,7 @@ func (s *Server) FindVault(ctx context.Context, req *api.Req_FindVault) (*api.Va
 		return nil, err
 	}
 
+	pool.Reform(vault)
 	return views.Vault(vault, pool), nil
 }
 
@@ -208,7 +209,9 @@ func (s *Server) ListVaults(ctx context.Context, _ *api.Req_ListVaults) (*api.Re
 
 	poolMap := toPoolMap(pools)
 	for _, vault := range vaults {
-		resp.Vaults = append(resp.Vaults, views.Vault(vault, poolMap[vault.AssetID]))
+		pool := poolMap[vault.AssetID]
+		pool.Reform(vault)
+		resp.Vaults = append(resp.Vaults, views.Vault(vault, pool))
 	}
 
 	return resp, nil

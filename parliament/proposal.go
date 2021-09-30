@@ -42,6 +42,19 @@ func (s *parliament) renderProposalItems(ctx context.Context, action core.Action
 				Value: value,
 			},
 		}
+	case core.ActionPoolGain, core.ActionPoolPardon:
+		var (
+			id uuid.UUID
+		)
+
+		_, _ = mtg.Scan(data, &id)
+		items = []Item{
+			{
+				Key:    "pool",
+				Value:  s.fetchAssetSymbol(ctx, id.String()),
+				Action: assetAction(id.String()),
+			},
+		}
 	}
 
 	return

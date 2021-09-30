@@ -32,6 +32,8 @@ func HandleRelease(
 			return err
 		}
 
+		pool.Reform(vault)
+
 		if vault.Version < r.Version {
 			if err := unlock(r, pool, vault); err != nil {
 				return err

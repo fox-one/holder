@@ -69,15 +69,11 @@ func (w *Keeper) run(ctx context.Context, t time.Time) error {
 		for _, vault := range vaults {
 			fromID = vault.ID
 
-			if vault.Status == core.VaultStatusReleased {
-				continue
-			}
-
-			if t.Sub(vault.CreatedAt).Milliseconds()/1000 < vault.Duration {
-				continue
-			}
-
 			if _, ok := w.filter[vault.ID]; ok {
+				continue
+			}
+
+			if vault.Status == core.VaultStatusReleased {
 				continue
 			}
 
@@ -85,6 +81,11 @@ func (w *Keeper) run(ctx context.Context, t time.Time) error {
 			if err != nil {
 				log.WithError(err).Errorln("pools.Find")
 				return err
+			}
+
+			pool.Reform(vault)
+			if vault.EndAt().After(t) {
+				continue
 			}
 
 			if err := w.notifier.LockDone(ctx, pool, vault); err != nil {

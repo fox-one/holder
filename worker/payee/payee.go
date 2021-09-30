@@ -49,6 +49,7 @@ func New(
 		// pool
 		core.ActionPoolDonate: pool.HandleDonate(pools, properties),
 		core.ActionPoolGain:   pool.HandleGain(pools, wallets, system),
+		core.ActionPoolPardon: pool.HandlePardon(pools),
 		// vat
 		core.ActionVaultLock:    vat.HandleLock(pools, vaults, assetz),
 		core.ActionVaultRelease: vat.HandleRelease(pools, vaults, wallets, properties),

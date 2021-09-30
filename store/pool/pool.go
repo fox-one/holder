@@ -47,13 +47,14 @@ func (s *poolStore) Save(_ context.Context, pool *core.Pool, version int64) erro
 	}
 
 	updates := map[string]interface{}{
-		"amount":    pool.Amount,
-		"share":     pool.Share,
-		"reward":    pool.Reward,
-		"reward_at": pool.RewardAt,
-		"liquidity": pool.Liquidity,
-		"profit":    pool.Profit,
-		"version":   version,
+		"amount":      pool.Amount,
+		"share":       pool.Share,
+		"reward":      pool.Reward,
+		"reward_at":   pool.RewardAt,
+		"pardoned_at": pool.PardonedAt,
+		"liquidity":   pool.Liquidity,
+		"profit":      pool.Profit,
+		"version":     version,
 	}
 
 	tx := s.db.Update().Model(pool).Where("id = ? AND version = ?", pool.ID, pool.Version).Updates(updates)
