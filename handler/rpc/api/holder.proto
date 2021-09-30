@@ -19,12 +19,11 @@ enum Action {
     ProposalMake = 3;
     ProposalShout = 4;
     ProposalVote = 5;
-    // Pool
     PoolDonate = 6;
     PoolGain = 7;
-    // Vault
     VaultLock = 8;
     VaultRelease = 9;
+    PoolPardon = 10;
 }
 
 message Transaction {

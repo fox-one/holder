@@ -1,0 +1,18 @@
+id: c8d12a3e-8f90-4871-a738-716254b78d70
+
+messages:
+  - category: PLAIN_POST
+    data: |
+      # 大牢寶測試版本通知
+
+      1. 大牢寶 mtg 正式版本已經上線，節點由 Bigone, Poolin, Mixin, Exin, Fox 和東哥六方組成，機器人 id ：7000104160 歡迎體驗。
+      2. 測試版本將“特赦”所有在北京時間 2021.10.01 之前關押的未到期的“大牢”，“特赦”之後所有“大牢”立即到期，可以自由贖回；鎖倉期間如果有領取到獎勵也會正常發放。
+
+      HODL!!!
+
+  - category: PLAIN_CONTACT
+    data:
+      user_id: d402f2c6-1ba0-4d82-a75c-5674fae1acca
+
+recipients:
+  - 173b1a43-b273-36e3-a7f3-3719aeedc56f

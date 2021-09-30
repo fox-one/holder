@@ -21,6 +21,8 @@ type (
 		RewardAt  time.Time       `json:"reward_at,omitempty"`
 		Liquidity decimal.Decimal `sql:"type:decimal(64,12)" json:"liquidity,omitempty"`
 		Profit    decimal.Decimal `sql:"type:decimal(64,8)" json:"profit,omitempty"`
+		// Be pardoned
+		PardonedAt time.Time `json:"pardoned_at,omitempty"`
 		// Pool info
 		Name  string          `sql:"size:64" json:"name,omitempty"`
 		Logo  string          `sql:"size:256" json:"logo,omitempty"`
@@ -34,3 +36,18 @@ type (
 		List(ctx context.Context) ([]*Pool, error)
 	}
 )
+
+func (pool *Pool) Reform(vault *Vault) {
+	if vault.Status == VaultStatusReleased {
+		return
+	}
+
+	if vault.CreatedAt.After(pool.PardonedAt) {
+		return
+	}
+
+	if dur := pool.PardonedAt.Sub(vault.CreatedAt).Milliseconds() / 1000; dur > vault.Duration {
+		vault.Duration = dur
+		vault.MinDuration = dur
+	}
+}

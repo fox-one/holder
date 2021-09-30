@@ -38,6 +38,7 @@ func HandleLock(
 
 		if pool.Version == 0 {
 			pool.RewardAt = r.Now
+			pool.PardonedAt = r.Now
 
 			asset, err := assetz.Find(ctx, r.AssetID)
 			if err != nil {

@@ -23,6 +23,7 @@ const (
 	ActionPoolGain
 	ActionVaultLock
 	ActionVaultRelease
+	ActionPoolPardon
 )
 
 func (i Action) MarshalBinary() (data []byte, err error) {
