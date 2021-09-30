@@ -47,9 +47,10 @@ func New(
 		core.ActionProposalShout: proposal.HandleShout(proposals, parliaments, system),
 		core.ActionProposalVote:  proposal.HandleVote(proposals, parliaments, walletz, system),
 		// pool
-		core.ActionPoolDonate: pool.HandleDonate(pools, properties),
-		core.ActionPoolGain:   pool.HandleGain(pools, wallets, system),
-		core.ActionPoolPardon: pool.HandlePardon(pools),
+		core.ActionPoolDonate:    pool.HandleDonate(pools, properties),
+		core.ActionPoolGain:      pool.HandleGain(pools, wallets, system),
+		core.ActionPoolPardon:    pool.HandlePardon(pools),
+		core.ActionPoolPardonAll: pool.HandlePardonAll(pools),
 		// vat
 		core.ActionVaultLock:    vat.HandleLock(pools, vaults, assetz),
 		core.ActionVaultRelease: vat.HandleRelease(pools, vaults, wallets, properties),

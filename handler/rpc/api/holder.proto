@@ -24,6 +24,7 @@ enum Action {
     VaultLock = 8;
     VaultRelease = 9;
     PoolPardon = 10;
+    PoolPardonAll = 11;
 }
 
 message Transaction {

@@ -18,11 +18,12 @@ func _() {
 	_ = x[ActionVaultLock-8]
 	_ = x[ActionVaultRelease-9]
 	_ = x[ActionPoolPardon-10]
+	_ = x[ActionPoolPardonAll-11]
 }
 
-const _Action_name = "SysWithdrawSysPropertyProposalMakeProposalShoutProposalVotePoolDonatePoolGainVaultLockVaultReleasePoolPardon"
+const _Action_name = "SysWithdrawSysPropertyProposalMakeProposalShoutProposalVotePoolDonatePoolGainVaultLockVaultReleasePoolPardonPoolPardonAll"
 
-var _Action_index = [...]uint8{0, 11, 22, 34, 47, 59, 69, 77, 86, 98, 108}
+var _Action_index = [...]uint8{0, 11, 22, 34, 47, 59, 69, 77, 86, 98, 108, 121}
 
 func (i Action) String() string {
 	i -= 1
