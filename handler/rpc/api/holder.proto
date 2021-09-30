@@ -55,6 +55,8 @@ message Pool {
     string price = 9;
     // @inject_tag: swaggertype:"string" format:"date"
     google.protobuf.Timestamp reward_at = 10;
+    // @inject_tag: swaggertype:"string" format:"date"
+    google.protobuf.Timestamp pardoned_at = 11;
 }
 
 message Vault {

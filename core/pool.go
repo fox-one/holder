@@ -46,7 +46,7 @@ func (pool *Pool) Reform(vault *Vault) {
 		return
 	}
 
-	if dur := pool.PardonedAt.Sub(vault.CreatedAt).Milliseconds() / 1000; dur > vault.Duration {
+	if dur := pool.PardonedAt.Sub(vault.CreatedAt).Milliseconds() / 1000; dur < vault.Duration {
 		vault.Duration = dur
 		vault.MinDuration = dur
 	}
