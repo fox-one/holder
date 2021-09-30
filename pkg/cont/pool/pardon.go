@@ -3,7 +3,6 @@ package pool
 import (
 	"github.com/fox-one/holder/core"
 	"github.com/fox-one/holder/pkg/cont"
-	"github.com/fox-one/holder/pkg/mtg/types"
 	"github.com/fox-one/pkg/logger"
 )
 
@@ -16,7 +15,7 @@ func HandlePardon(pools core.PoolStore) cont.HandlerFunc {
 			return err
 		}
 
-		pool, err := From(r.WithBody(types.UUID(r.AssetID)), pools)
+		pool, err := From(r, pools)
 		if err != nil {
 			return err
 		}
