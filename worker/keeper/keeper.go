@@ -84,8 +84,7 @@ func (w *Keeper) run(ctx context.Context, t time.Time) error {
 			}
 
 			pool.Reform(vault)
-
-			if t.Sub(vault.CreatedAt).Milliseconds()/1000 < vault.Duration {
+			if vault.EndAt().After(t) {
 				continue
 			}
 
