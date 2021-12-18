@@ -2,6 +2,7 @@ package pool
 
 import (
 	"context"
+	"time"
 
 	"github.com/fox-one/holder/core"
 	"github.com/fox-one/pkg/store/db"
@@ -44,6 +45,10 @@ func (s *poolStore) Save(_ context.Context, pool *core.Pool, version int64) erro
 	if pool.Version == 0 {
 		pool.Version = version
 		return s.db.Update().Where("id = ?", pool.ID).FirstOrCreate(pool).Error
+	}
+
+	if pool.PardonedAt.IsZero() {
+		pool.PardonedAt = time.Unix(0, 0)
 	}
 
 	updates := map[string]interface{}{
