@@ -57,13 +57,14 @@ func HandleCreate(walletz core.WalletService, system *core.System) http.HandlerF
 			return
 		}
 
-		follow, _ := uuid.FromString(body.FollowID)
 		data, err := types.EncodeWithTypes(body.Parameters...)
 		if err == nil {
-			data, _ = core.TransactionAction{
-				FollowID: follow.Bytes(),
-				Body:     data,
-			}.Encode()
+			action := core.TransactionAction{Body: data}
+			if follow, err := uuid.FromString(body.FollowID); err == nil {
+				action.FollowID = follow.Bytes()
+			}
+
+			data, err = action.Encode()
 		}
 
 		if err != nil {
