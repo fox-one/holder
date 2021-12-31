@@ -17,7 +17,7 @@ import (
 
 type CreateRequest struct {
 	// follow id to track tx (uuid)
-	FollowID string `json:"follow_id,omitempty" format:"uuid" valid:"uuid,required"`
+	FollowID string `json:"follow_id,omitempty" format:"uuid" valid:"uuid"`
 	// tx parameters
 	// lock ["bit","8","int","120","int","120"]
 	// unlock ["bit","9","uuid","{vault_id}"]
