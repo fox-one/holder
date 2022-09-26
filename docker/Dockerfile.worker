@@ -1,23 +1,10 @@
-FROM golang:1.16 AS builder
-
-WORKDIR /app
-
-COPY go.mod go.sum ./
-RUN go mod download
-
-RUN go install github.com/go-task/task/v3/cmd/task@latest
-
-COPY . ./
-
-RUN task build-worker
-
 FROM alpine
 
 WORKDIR /app
 
-COPY --from=builder /app/builds/holder-worker .
-Add assets assets
+ADD worker worker
+ADD assets assets
 
 EXPOSE 7777
 
-ENTRYPOINT ["/app/holder-worker"]
+ENTRYPOINT ["/app/worker"]
