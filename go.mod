@@ -46,7 +46,6 @@ require (
 	golang.org/x/net v0.0.0-20221004154528-8021a29435af // indirect
 	golang.org/x/sync v0.0.0-20220929204114-8fcdb60fdcc0
 	golang.org/x/sys v0.0.0-20221006211917-84dc82d7e875 // indirect
-	golang.org/x/text v0.3.7
-	golang.org/x/tools v0.1.12 // indirect
+	golang.org/x/text v0.3.8
 	google.golang.org/protobuf v1.28.1
 )
