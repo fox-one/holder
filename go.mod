@@ -43,10 +43,8 @@ require (
 	github.com/swaggo/swag v1.8.6
 	github.com/twitchtv/twirp v8.1.2+incompatible
 	golang.org/x/crypto v0.0.0-20221005025214-4161e89ecf1b // indirect
-	golang.org/x/net v0.0.0-20221004154528-8021a29435af // indirect
+	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/sync v0.0.0-20220929204114-8fcdb60fdcc0
-	golang.org/x/sys v0.0.0-20221006211917-84dc82d7e875 // indirect
-	golang.org/x/text v0.3.7
-	golang.org/x/tools v0.1.12 // indirect
+	golang.org/x/text v0.7.0
 	google.golang.org/protobuf v1.28.1
 )
