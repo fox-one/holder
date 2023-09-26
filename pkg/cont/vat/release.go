@@ -16,6 +16,7 @@ func HandleRelease(
 	vaults core.VaultStore,
 	wallets core.WalletStore,
 	properties property.Store,
+	system *core.System,
 ) cont.HandlerFunc {
 	return func(r *cont.Request) error {
 		ctx := r.Context()
@@ -35,6 +36,10 @@ func HandleRelease(
 		pool.Reform(vault)
 
 		if vault.Version < r.Version {
+			if err := require(r.Sender == vault.UserID || system.IsMember(r.Sender), "not-allowed"); err != nil {
+				return err
+			}
+
 			if err := unlock(r, pool, vault); err != nil {
 				return err
 			}
@@ -101,10 +106,6 @@ func HandleRelease(
 }
 
 func unlock(r *cont.Request, pool *core.Pool, vault *core.Vault) error {
-	if err := require(r.Sender == vault.UserID, "not-allowed"); err != nil {
-		return err
-	}
-
 	if err := require(vault.Status == core.VaultStatusLocking, "already-unlocked"); err != nil {
 		return err
 	}

@@ -53,7 +53,7 @@ func New(
 		core.ActionPoolPardonAll: pool.HandlePardonAll(pools),
 		// vat
 		core.ActionVaultLock:    vat.HandleLock(pools, vaults, assetz),
-		core.ActionVaultRelease: vat.HandleRelease(pools, vaults, wallets, properties),
+		core.ActionVaultRelease: vat.HandleRelease(pools, vaults, wallets, properties, system),
 	}
 
 	return &Payee{

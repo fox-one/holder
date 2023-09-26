@@ -338,6 +338,20 @@ func (mr *MockNotifierMockRecorder) Auth(arg0, arg1 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Auth", reflect.TypeOf((*MockNotifier)(nil).Auth), arg0, arg1)
 }
 
+// LockDone mocks base method
+func (m *MockNotifier) LockDone(arg0 context.Context, arg1 *core.Pool, arg2 *core.Vault) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "LockDone", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// LockDone indicates an expected call of LockDone
+func (mr *MockNotifierMockRecorder) LockDone(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LockDone", reflect.TypeOf((*MockNotifier)(nil).LockDone), arg0, arg1, arg2)
+}
+
 // Snapshot mocks base method
 func (m *MockNotifier) Snapshot(arg0 context.Context, arg1 *core.Transfer, arg2 string) error {
 	m.ctrl.T.Helper()

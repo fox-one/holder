@@ -54,11 +54,19 @@ definitions:
         type: string
       name:
         type: string
+      pardoned_at:
+        description: '@inject_tag: swaggertype:"string" format:"date"'
+        format: date
+        type: string
       price:
         type: string
       profit:
         type: string
       reward:
+        type: string
+      reward_at:
+        description: '@inject_tag: swaggertype:"string" format:"date"'
+        format: date
         type: string
       share:
         type: string
@@ -123,12 +131,20 @@ definitions:
         type: string
       liquidity:
         type: string
+      locked_price:
+        type: string
       min_duration:
         type: integer
       penalty:
         type: string
       pool:
         $ref: '#/definitions/api.Pool'
+      released_at:
+        description: '@inject_tag: swaggertype:"string" format:"date"'
+        format: date
+        type: string
+      released_price:
+        type: string
       reward:
         type: string
       share:
