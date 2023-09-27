@@ -28,6 +28,9 @@ func TestVault(t *testing.T) {
 	pools := createPools(ctrl)
 	vaults := createVaults(ctrl)
 	properties := property.Memory()
+	system := &core.System{
+		Members: []string{uuid.New()},
+	}
 
 	properties.Save(context.TODO(), sys.SystemProfitRateKey, "0.2")
 
@@ -45,7 +48,7 @@ func TestVault(t *testing.T) {
 	assetz.EXPECT().Find(gomock.Any(), gomock.Any()).Return(&core.Asset{}, nil).AnyTimes()
 
 	lockHandler := HandleLock(pools, vaults, assetz)
-	releaseHandler := HandleRelease(pools, vaults, wallets, properties)
+	releaseHandler := HandleRelease(pools, vaults, wallets, properties, system)
 
 	assetID := newUUID()
 	userID := newUUID()
@@ -195,7 +198,7 @@ func TestVault(t *testing.T) {
 		assert.Equal(t, decimal.Zero.String(), GetReward(pool, vault).String())
 	})
 
-	t.Run("release remains", func(t *testing.T) {
+	t.Run("release remains by member", func(t *testing.T) {
 		userVaults, _ := vaults.ListUser(context.TODO(), userID)
 		assert.NotEmpty(t, userVaults)
 
@@ -213,7 +216,7 @@ func TestVault(t *testing.T) {
 				Now:      vault.CreatedAt.Add(time.Hour * 24),
 				Version:  version,
 				TraceID:  newUUID(),
-				Sender:   userID,
+				Sender:   system.Members[0],
 				FollowID: uuid.New(),
 				AssetID:  assetID,
 				Amount:   number.Decimal("8"),
