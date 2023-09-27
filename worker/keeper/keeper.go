@@ -98,14 +98,15 @@ func (w *Keeper) run(ctx context.Context, t time.Time) error {
 				continue
 			}
 
+			log.Infof("handle expired valut %s", vault.TraceID)
 			if err := w.notifier.LockDone(ctx, pool, vault); err != nil {
 				log.WithError(err).Errorln("notifier.LockDone")
 				return err
 			}
 
-			if err := w.releaseVault(ctx, vault); err != nil {
-				return err
-			}
+			//if err := w.releaseVault(ctx, vault); err != nil {
+			//	return err
+			//}
 
 			w.filter[vault.ID] = struct{}{}
 		}

@@ -175,3 +175,4 @@ Temporary Items
 # End of https://www.toptal.com/developers/gitignore/api/go,macos,intellij,visualstudiocode
 builds
 dist
+deploy_test.sh
