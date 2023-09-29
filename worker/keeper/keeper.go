@@ -2,9 +2,13 @@ package keeper
 
 import (
 	"context"
+	"encoding/base64"
 	"time"
 
 	"github.com/fox-one/holder/core"
+	"github.com/fox-one/holder/pkg/mtg"
+	"github.com/fox-one/holder/pkg/mtg/types"
+	"github.com/fox-one/holder/pkg/uuid"
 	"github.com/fox-one/holder/worker/keeper/pool"
 	"github.com/fox-one/pkg/logger"
 )
@@ -13,11 +17,15 @@ func New(
 	pools core.PoolStore,
 	vaults core.VaultStore,
 	notifier core.Notifier,
+	walletz core.WalletService,
+	system *core.System,
 ) *Keeper {
 	return &Keeper{
 		pools:    pools,
 		vaults:   vaults,
 		notifier: notifier,
+		walletz:  walletz,
+		system:   system,
 		filter:   make(map[int64]struct{}),
 	}
 }
@@ -26,6 +34,8 @@ type Keeper struct {
 	pools    core.PoolStore
 	vaults   core.VaultStore
 	notifier core.Notifier
+	system   *core.System
+	walletz  core.WalletService
 	filter   map[int64]struct{}
 }
 
@@ -88,10 +98,15 @@ func (w *Keeper) run(ctx context.Context, t time.Time) error {
 				continue
 			}
 
+			log.Infof("handle expired valut %s", vault.TraceID)
 			if err := w.notifier.LockDone(ctx, pool, vault); err != nil {
 				log.WithError(err).Errorln("notifier.LockDone")
 				return err
 			}
+
+			//if err := w.releaseVault(ctx, vault); err != nil {
+			//	return err
+			//}
 
 			w.filter[vault.ID] = struct{}{}
 		}
@@ -99,6 +114,38 @@ func (w *Keeper) run(ctx context.Context, t time.Time) error {
 		if len(vaults) < limit {
 			break
 		}
+	}
+
+	return nil
+}
+
+func (w *Keeper) releaseVault(ctx context.Context, vault *core.Vault) error {
+	body, err := mtg.Encode(core.ActionVaultRelease, types.UUID(vault.TraceID))
+	if err != nil {
+		return err
+	}
+
+	action := core.TransactionAction{
+		Body: body,
+	}
+
+	b, err := action.Encode()
+	if err != nil {
+		return err
+	}
+
+	t := &core.Transfer{
+		TraceID:   uuid.Modify(vault.TraceID, "keep:release"),
+		AssetID:   w.system.GasAssetID,
+		Amount:    w.system.GasAmount,
+		Memo:      base64.StdEncoding.EncodeToString(b),
+		Threshold: w.system.Threshold,
+		Opponents: w.system.Members,
+	}
+
+	if err := w.walletz.HandleTransfer(ctx, t); err != nil {
+		logger.FromContext(ctx).WithError(err).Errorln("walletz.HandleTransfer")
+		return err
 	}
 
 	return nil

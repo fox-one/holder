@@ -53,7 +53,7 @@ func handleProposal(r *cont.Request, walletz core.WalletService, system *core.Sy
 		Opponents: system.Members,
 		Memo:      memo,
 	}); err != nil {
-		logger.FromContext(ctx).WithError(err).Errorln("wallets.HandleTransfer")
+		logger.FromContext(ctx).WithError(err).Errorf("handle proposal %s failed", action.String())
 		return err
 	}
 

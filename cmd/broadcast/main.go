@@ -8,13 +8,10 @@ import (
 	"flag"
 	"log"
 	"os"
-	"strconv"
 
 	"github.com/fox-one/mixin-sdk-go"
-	"github.com/fox-one/pkg/uuid"
-	jsoniter "github.com/json-iterator/go"
-	"github.com/spf13/cast"
-	"github.com/spf13/viper"
+	"github.com/google/uuid"
+	"gopkg.in/yaml.v2"
 )
 
 var (
@@ -28,29 +25,25 @@ func main() {
 
 	client, err := loadKeystore(*config)
 	if err != nil {
-		log.Fatalf("loadKeystore(%q): %v", *config, err)
+		log.Panicf("loadKeystore(%s): %v", *config, err)
 	}
 
 	t, err := loadTmpl(*tmpl)
 	if err != nil {
-		log.Fatalf("loadTmpl(%q): %v", *tmpl, err)
+		log.Panicf("loadTmpl(%s): %v", *tmpl, err)
 	}
 
 	for _, receipt := range t.Recipients {
+		trace := uuid.NewSHA1(uuid.MustParse(t.ID), []byte(receipt))
+
 		for idx, m := range t.Messages {
-			traceID := uuid.Modify(t.ID, cast.ToString(idx))
+			messageID := uuid.NewSHA1(trace, []byte{byte(idx)}).String()
 
-			var b []byte = m.Data
-			switch m.Category {
-			case mixin.MessageCategoryPlainPost, mixin.MessageCategoryPlainText:
-				s, _ := strconv.Unquote(string(b))
-				b = []byte(s)
-			}
-
+			var b = []byte(m.Data)
 			req := &mixin.MessageRequest{
 				ConversationID: mixin.UniqueConversationID(receipt, client.ClientID),
 				RecipientID:    receipt,
-				MessageID:      uuid.Modify(traceID, receipt),
+				MessageID:      messageID,
 				Category:       m.Category,
 				Data:           base64.StdEncoding.EncodeToString(b),
 			}
@@ -88,24 +81,13 @@ func loadTmpl(name string) (*MessageTmpl, error) {
 
 	defer b.Close()
 
-	v := viper.New()
-	v.SetConfigType("yaml")
-	if err := v.ReadConfig(b); err != nil {
-		return nil, err
-	}
-
-	raw, err := jsoniter.Marshal(v.AllSettings())
-	if err != nil {
-		return nil, err
-	}
-
 	var tmpl MessageTmpl
-	if err := jsoniter.Unmarshal(raw, &tmpl); err != nil {
+	if err := yaml.NewDecoder(b).Decode(&tmpl); err != nil {
 		return nil, err
 	}
 
 	if tmpl.ID == "" {
-		tmpl.ID = uuid.New()
+		tmpl.ID = uuid.NewString()
 	}
 
 	return &tmpl, nil

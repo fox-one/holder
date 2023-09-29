@@ -1,16 +1,12 @@
 package main
 
-import (
-	"encoding/json"
-)
-
 type Message struct {
-	Category string          `json:"category,omitempty"`
-	Data     json.RawMessage `json:"data,omitempty"`
+	Category string `json:"category,omitempty" yaml:"category"`
+	Data     string `json:"data,omitempty" yaml:"data"`
 }
 
 type MessageTmpl struct {
-	ID         string    `json:"id,omitempty"`
-	Messages   []Message `json:"messages,omitempty"`
-	Recipients []string  `json:"recipients,omitempty"`
+	ID         string    `json:"id,omitempty" yaml:"id"`
+	Messages   []Message `json:"messages,omitempty" yaml:"messages"`
+	Recipients []string  `json:"recipients,omitempty" yaml:"recipients"`
 }

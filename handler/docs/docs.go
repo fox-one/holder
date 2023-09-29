@@ -362,6 +362,11 @@ var doc = `{
                 "name": {
                     "type": "string"
                 },
+                "pardoned_at": {
+                    "description": "@inject_tag: swaggertype:\"string\" format:\"date\"",
+                    "type": "string",
+                    "format": "date"
+                },
                 "price": {
                     "type": "string"
                 },
@@ -370,6 +375,11 @@ var doc = `{
                 },
                 "reward": {
                     "type": "string"
+                },
+                "reward_at": {
+                    "description": "@inject_tag: swaggertype:\"string\" format:\"date\"",
+                    "type": "string",
+                    "format": "date"
                 },
                 "share": {
                     "type": "string"
@@ -466,6 +476,9 @@ var doc = `{
                 "liquidity": {
                     "type": "string"
                 },
+                "locked_price": {
+                    "type": "string"
+                },
                 "min_duration": {
                     "type": "integer"
                 },
@@ -474,6 +487,14 @@ var doc = `{
                 },
                 "pool": {
                     "$ref": "#/definitions/api.Pool"
+                },
+                "released_at": {
+                    "description": "@inject_tag: swaggertype:\"string\" format:\"date\"",
+                    "type": "string",
+                    "format": "date"
+                },
+                "released_price": {
+                    "type": "string"
                 },
                 "reward": {
                     "type": "string"
